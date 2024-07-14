@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "62950822066",
+    "project_id": "bevy-messenger",
+    "storage_bucket": "bevy-messenger.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:62950822066:android:a8ef60f92f2cae7f9af9ab",
+        "android_client_info": {
+          "package_name": "com.app.bevy_messenger"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbrnaJ9KdmGUZgJyKP-XSyPDm-QmmL5MM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

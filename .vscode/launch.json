@@ -1,0 +1,31 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+
+    // Value program is the path to the main.dart file
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "bevy_messenger",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/app/main.dart"	
+
+        },
+        {
+            "name": "bevy_messenger (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile",
+            "program": "lib/app/main.dart"
+        },
+        {
+            "name": "bevy_messenger (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release",
+            "program": "lib/app/main.dart"	
+        }
+    ]
+}
