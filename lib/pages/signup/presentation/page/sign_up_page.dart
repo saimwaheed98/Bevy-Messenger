@@ -232,8 +232,8 @@ class _LoginPageState extends State<SignUpPage> {
                                 ? AppColors.redColor
                                 : AppColors.textColor,
                             onPressed: () {
-                              _otpCreateProfileCubit.verifyOtpAndCreateProfile(
-                                  _otpCreateProfileCubit.getOtp, context);
+                              // _otpCreateProfileCubit.verifyOtpAndCreateProfile(
+                              //     _otpCreateProfileCubit.getOtp, context);
                               // if(_createProfileCubit.isCreatingProfile) return;
                               // _createProfileCubit.createProfile(context);
                             },
