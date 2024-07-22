@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:bevy_messenger/bloc/cubits/auth_cubit.dart';
 import 'package:bevy_messenger/helper/toast_messages.dart';
 import 'package:bevy_messenger/pages/signup/domain/usecases/create_profile_usecase.dart';
@@ -8,6 +9,7 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../core/di/service_locator_imports.dart';
+import '../../../../../routes/routes_imports.gr.dart';
 import '../../../../login/presentation/bloc/cubit/validate_text_fields_cubit.dart';
 part '../state/create_profile_state.dart';
 
@@ -98,11 +100,11 @@ class CreateProfileCubit extends Cubit<CreateProfileState> {
     } else {
       if (isTaken == false) {
         emit(CreateProfileLoading());
-        // AutoRouter.of(context).replace(OtpPageRoute());
         isCreatingProfile = true;
         final result = await createProfileUsecase.createProfile(
             phoneController.text, context);
         if (result == 'success') {
+        AutoRouter.of(context).replace(OtpPageRoute());
           emit(CreateProfileSuccess());
         } else {
           log("result $result");
@@ -118,7 +120,7 @@ class CreateProfileCubit extends Cubit<CreateProfileState> {
   bool isAllFieldsValid() {
     return emailController.text.isNotEmpty &&
         nameController.text.isNotEmpty &&
-        // phoneController.text.isNotEmpty &&
+        phoneController.text.isNotEmpty &&
         passwordController.text.isNotEmpty &&
         confirmPasswordController.text.isNotEmpty;
   }

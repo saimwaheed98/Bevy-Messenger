@@ -9,8 +9,8 @@ import 'package:bevy_messenger/pages/signup/data/models/usermodel/user_model.dar
 import 'package:bevy_messenger/pages/signup/presentation/bloc/cubit/create_profile_cubit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-// import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
-// import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
+import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 import '../../../../core/di/service_locator_imports.dart';
 
 abstract class VerifyOtpDataSource {
@@ -27,13 +27,13 @@ class VerifyOtpDataSourceImpl extends VerifyOtpDataSource {
     final AuthCubit authCubit = Di().sl<AuthCubit>();
 
     try {
-      // if (createProfileCubit.otpVerificationCode.isNotEmpty) {
-      //   final PhoneAuthCredential credential = PhoneAuthProvider.credential(
-      //       verificationId: createProfileCubit.otpVerificationCode,
-      //       smsCode: otp);
-      //   AuthDataSource.auth
-      //       .signInWithCredential(credential)
-      //       .then((userCredential) async {
+      if (createProfileCubit.otpVerificationCode.isNotEmpty) {
+        final PhoneAuthCredential credential = PhoneAuthProvider.credential(
+            verificationId: createProfileCubit.otpVerificationCode,
+            smsCode: otp);
+        AuthDataSource.auth
+            .signInWithCredential(credential)
+            .then((userCredential) async {
           await AuthDataSource.auth
               .createUserWithEmailAndPassword(
                   email: createProfileCubit.emailController.text,
@@ -62,44 +62,44 @@ class VerifyOtpDataSourceImpl extends VerifyOtpDataSource {
             log('User created successfully $data');
             authCubit.getUserDataLocal(data);
 
-            // ZegoUIKitPrebuiltCallInvitationService().init(
-            //   appID: ZegoCLouds.appId,
-            //   appSign: ZegoCLouds.appSignIn,
-            //   userID: data.id,
-            //   userName: data.name,
-            //   plugins: [
-            //     ZegoUIKitSignalingPlugin(),
-            //   ],
-            //   notificationConfig: ZegoCallInvitationNotificationConfig(
-            //     androidNotificationConfig: ZegoCallAndroidNotificationConfig(
-            //       showFullScreen: true,
-            //       channelID: "ZegoUIKit",
-            //       channelName: "Call Notifications",
-            //       sound: "call",
-            //       icon: "call",
-            //     ),
-            //     iOSNotificationConfig: ZegoCallIOSNotificationConfig(
-            //       systemCallingIconName: 'CallKitIcon',
-            //     ),
-            //   ),
-            //   requireConfig: (ZegoCallInvitationData data) {
-            //     final config = (data.invitees.length > 1)
-            //         ? ZegoCallType.videoCall == data.type
-            //             ? ZegoUIKitPrebuiltCallConfig.groupVideoCall()
-            //             : ZegoUIKitPrebuiltCallConfig.groupVoiceCall()
-            //         : ZegoCallType.videoCall == data.type
-            //             ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
-            //             : ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall();
+            ZegoUIKitPrebuiltCallInvitationService().init(
+              appID: ZegoCLouds.appId,
+              appSign: ZegoCLouds.appSignIn,
+              userID: data.id,
+              userName: data.name,
+              plugins: [
+                ZegoUIKitSignalingPlugin(),
+              ],
+              notificationConfig: ZegoCallInvitationNotificationConfig(
+                androidNotificationConfig: ZegoCallAndroidNotificationConfig(
+                  showFullScreen: true,
+                  channelID: "ZegoUIKit",
+                  channelName: "Call Notifications",
+                  sound: "call",
+                  icon: "call",
+                ),
+                iOSNotificationConfig: ZegoCallIOSNotificationConfig(
+                  systemCallingIconName: 'CallKitIcon',
+                ),
+              ),
+              requireConfig: (ZegoCallInvitationData data) {
+                final config = (data.invitees.length > 1)
+                    ? ZegoCallType.videoCall == data.type
+                        ? ZegoUIKitPrebuiltCallConfig.groupVideoCall()
+                        : ZegoUIKitPrebuiltCallConfig.groupVoiceCall()
+                    : ZegoCallType.videoCall == data.type
+                        ? ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall()
+                        : ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall();
 
-            //     config.topMenuBar.isVisible = true;
-            //     config.topMenuBar.buttons
-            //         .insert(0, ZegoCallMenuBarButtonName.minimizingButton);
-            //     config.topMenuBar.buttons
-            //         .insert(0, ZegoCallMenuBarButtonName.soundEffectButton);
+                config.topMenuBar.isVisible = true;
+                config.topMenuBar.buttons
+                    .insert(0, ZegoCallMenuBarButtonName.minimizingButton);
+                config.topMenuBar.buttons
+                    .insert(0, ZegoCallMenuBarButtonName.soundEffectButton);
 
-            //     return config;
-            //   },
-            // );
+                return config;
+              },
+            );
 
             completer.complete('success');
           }).catchError((error) {
@@ -108,16 +108,16 @@ class VerifyOtpDataSourceImpl extends VerifyOtpDataSource {
                 "Error while creating profile please try again", context);
             completer.completeError('Error during createUserWithEmailAndPassword: $error');
           });
-      //   }).catchError((error) {
-      //     log('Error during signInWithCredential: $error');
-      //     WarningHelper.showWarningToast(
-      //         "Error while verifying OTP, please try again", context);
-      //     completer.completeError('Error during signInWithCredential: $error');
-      //   });
-      // } else {
-      //   log('otp verification code is empty');
-      //   throw Exception('otp verification code is empty');
-      // }
+        }).catchError((error) {
+          log('Error during signInWithCredential: $error');
+          WarningHelper.showWarningToast(
+              "Error while verifying OTP, please try again", context);
+          completer.completeError('Error during signInWithCredential: $error');
+        });
+      } else {
+        log('otp verification code is empty');
+        throw Exception('otp verification code is empty');
+      }
     } catch (e, stackTrace) {
       log('Error while verify otp: $e $stackTrace');
       WarningHelper.showWarningToast(

@@ -59,7 +59,7 @@ class OtpPage extends StatelessWidget {
                   ),
                   AppTextStyle(
                       text:
-                          'We have sent a verification code to\n${createProfileCubit.phoneController.text}',
+                          'We have sent a verification code to\n${createProfileCubit.emailController.text}',
                       fontSize: 14,
                       color: AppColors.textColor.withOpacity(0.8),
                       textAlign: TextAlign.center,

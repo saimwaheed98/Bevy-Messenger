@@ -21,44 +21,46 @@ class VerifyOtpCreateProfileCubit extends Cubit<VerifyOtpCreateProfileState> {
       String otp, BuildContext context) async {
     final CreateProfileCubit createProfileCubit = Di().sl<CreateProfileCubit>();
     emit(VerifyOtpCreateProfileLoading());
-    // if (otp.isEmpty) {
-    //   WarningHelper.showWarningToast('Please enter otp', context);
-    //   emit(VerifyOtpCreateProfileFailed(message: 'Please enter otp'));
-    //   return;
-    // } else if (otp.length < 6) {
-    //   WarningHelper.showWarningToast('Please enter valid otp', context);
-    //   emit(VerifyOtpCreateProfileFailed(message: 'Please enter valid otp'));
-    //   return;
-    // } else {
-    if (!createProfileCubit.isAllFieldsValid()) {
-      WarningHelper.showWarningToast('Please fill all the fields', context);
-    } else if (!createProfileCubit.isPasswordValid()) {
-      WarningHelper.showWarningToast('Password should be same', context);
+    if (otp.isEmpty) {
+      WarningHelper.showWarningToast('Please enter otp', context);
+      emit(VerifyOtpCreateProfileFailed(message: 'Please enter otp'));
+      return;
+    } else if (otp.length < 6) {
+      WarningHelper.showWarningToast('Please enter valid otp', context);
+      emit(VerifyOtpCreateProfileFailed(message: 'Please enter valid otp'));
+      return;
     } else {
-      if (createProfileCubit.isTaken == false) {
-        WarningHelper.showWarningToast(
-            'Please wait for a while. we creating your account', context);
-        isVerifyingOtp = true;
-        emit(VerifyOtpCreateProfileSuccess());
-        final result =
-            await verifyOtpUseCase.verifyOtpAndCreateProfile(otp, context);
-        if (result == 'success') {
-          isVerifyingOtp = false;
-          emit(VerifyOtpCreateProfileSuccess());
-          createProfileCubit.clearTextFields();
-          // ignore: use_build_context_synchronously
-          AutoRouter.of(context).pushAndPopUntil(
-            const HomeBottomBarRoute(),
-            predicate: (route) => false,
-          );
-          return;
-        } else {
-          isVerifyingOtp = false;
-          emit(VerifyOtpCreateProfileFailed(message: 'Failed to create account'));
-        }
+      if (!createProfileCubit.isAllFieldsValid()) {
+        WarningHelper.showWarningToast('Please fill all the fields', context);
+      } else if (!createProfileCubit.isPasswordValid()) {
+        WarningHelper.showWarningToast('Password should be same', context);
       } else {
-        WarningHelper.showWarningToast(
-            'Please Change Your Username. This Is Already Taken', context);
+        if (createProfileCubit.isTaken == false) {
+          WarningHelper.showWarningToast(
+              'Please wait for a while. we creating your account', context);
+          isVerifyingOtp = true;
+          emit(VerifyOtpCreateProfileSuccess());
+          final result =
+              await verifyOtpUseCase.verifyOtpAndCreateProfile(otp, context);
+          if (result == 'success') {
+            isVerifyingOtp = false;
+            emit(VerifyOtpCreateProfileSuccess());
+            createProfileCubit.clearTextFields();
+            // ignore: use_build_context_synchronously
+            AutoRouter.of(context).pushAndPopUntil(
+              const HomeBottomBarRoute(),
+              predicate: (route) => false,
+            );
+            return;
+          } else {
+            isVerifyingOtp = false;
+            emit(VerifyOtpCreateProfileFailed(
+                message: 'Failed to create account'));
+          }
+        } else {
+          WarningHelper.showWarningToast(
+              'Please Change Your Username. This Is Already Taken', context);
+        }
       }
     }
   }

@@ -192,28 +192,28 @@ class _LoginPageState extends State<SignUpPage> {
                         const SizedBox(
                           height: 30,
                         ),
-                        // BlocBuilder(
-                        //   bloc: _textFieldsCubit,
-                        //   builder: (context, state) {
-                        //     return PhoneTextField(
-                        //       feildName: 'Phone Number',
-                        //       onChanged: (value) {
-                        //         debugPrint(
-                        //             "data ${value.countryCode} : hello ${value.international}");
-                        //         _createProfileCubit.phoneController.text =
-                        //             value.countryCode;
-                        //         _textFieldsCubit.validatePhoneNumberTextFields(
-                        //             value.countryCode);
-                        //       },
-                        //       errorText: _textFieldsCubit.isPhoneNumberValid
-                        //           ? ''
-                        //           : 'Please enter a valid phone number',
-                        //       textColor: _textFieldsCubit.isPhoneNumberValid
-                        //           ? AppColors.white
-                        //           : AppColors.redColor,
-                        //     );
-                        //   },
-                        // ),
+                        BlocBuilder(
+                          bloc: _textFieldsCubit,
+                          builder: (context, state) {
+                            return PhoneTextField(
+                              feildName: 'Phone Number',
+                              onChanged: (value) {
+                                debugPrint(
+                                    "data ${value.countryCode} : hello ${value.international}");
+                                _createProfileCubit.phoneController.text =
+                                    value.countryCode;
+                                _textFieldsCubit.validatePhoneNumberTextFields(
+                                    value.countryCode);
+                              },
+                              errorText: _textFieldsCubit.isPhoneNumberValid
+                                  ? ''
+                                  : 'Please enter a valid phone number',
+                              textColor: _textFieldsCubit.isPhoneNumberValid
+                                  ? AppColors.white
+                                  : AppColors.redColor,
+                            );
+                          },
+                        ),
                         const SizedBox(
                           height: 30,
                         ),
@@ -234,8 +234,8 @@ class _LoginPageState extends State<SignUpPage> {
                             onPressed: () {
                               // _otpCreateProfileCubit.verifyOtpAndCreateProfile(
                               //     _otpCreateProfileCubit.getOtp, context);
-                              // if(_createProfileCubit.isCreatingProfile) return;
-                              // _createProfileCubit.createProfile(context);
+                              if(_createProfileCubit.isCreatingProfile) return;
+                              _createProfileCubit.createProfile(context);
                             },
                             buttonText: "Continue",
                             heroTag: 'otp');
