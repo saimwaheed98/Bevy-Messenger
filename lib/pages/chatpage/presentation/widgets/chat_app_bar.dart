@@ -17,6 +17,7 @@ import 'package:bevy_messenger/utils/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 // import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
 import '../../../../utils/images_path.dart';
@@ -60,86 +61,86 @@ class ChatAppBar extends StatelessWidget {
 
   TextEditingController inviteeUsersIDTextCtrl = TextEditingController();
 
-  // Widget sendCallButton({
-  //   required bool isVideoCall,
-  //   required TextEditingController inviteeUsersIDTextCtrl,
-  //   void Function(String code, String message, List<String>)? onCallFinished,
-  // }) {
-  //   var inviteeIDs = _getUserDataCubit.userData;
-  //   return ValueListenableBuilder<TextEditingValue>(
-  //     valueListenable: inviteeUsersIDTextCtrl,
-  //     builder: (context, inviteeUserID, _) {
-  //       var invitees = getInvitesFromTextCtrl();
-  //       List<ZegoUIKitUser> list = [
-  //         ZegoUIKitUser(
-  //           id: inviteeIDs.id,
-  //           name: inviteeIDs.name,
-  //         ),
-  //       ];
+  Widget sendCallButton({
+    required bool isVideoCall,
+    required TextEditingController inviteeUsersIDTextCtrl,
+    void Function(String code, String message, List<String>)? onCallFinished,
+  }) {
+    var inviteeIDs = _getUserDataCubit.userData;
+    return ValueListenableBuilder<TextEditingValue>(
+      valueListenable: inviteeUsersIDTextCtrl,
+      builder: (context, inviteeUserID, _) {
+        var invitees = getInvitesFromTextCtrl();
+        List<ZegoUIKitUser> list = [
+          ZegoUIKitUser(
+            id: inviteeIDs.id,
+            name: inviteeIDs.name,
+          ),
+        ];
 
-  //       return ZegoSendCallInvitationButton(
-  //         isVideoCall: isVideoCall,
-  //         invitees: invitees,
-  //         resourceID: "bevy_messenger",
-  //         iconSize: const Size(32, 32),
-  //         buttonSize: const Size(44, 44),
-  //         padding: const EdgeInsets.all(2),
-  //         icon: ButtonIcon(
-  //           icon: isVideoCall
-  //               ? Column(
-  //                   mainAxisAlignment: MainAxisAlignment.center,
-  //                   crossAxisAlignment: CrossAxisAlignment.center,
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   children: [
-  //                     SvgPicture.asset(AppImages.videoCallIcon),
-  //                   ],
-  //                 )
-  //               : Column(
-  //                   mainAxisAlignment: MainAxisAlignment.center,
-  //                   crossAxisAlignment: CrossAxisAlignment.center,
-  //                   children: [
-  //                     SvgPicture.asset(AppImages.callIcon),
-  //                   ],
-  //                 ),
-  //         ),
-  //         onPressed: onCallFinished,
-  //         clickableBackgroundColor: AppColors.fieldsColor,
-  //         unclickableBackgroundColor: AppColors.fieldsColor,
-  //       );
-  //     },
-  //   );
-  // }
+        return ZegoSendCallInvitationButton(
+          isVideoCall: isVideoCall,
+          invitees: invitees,
+          resourceID: "bevy_messenger",
+          iconSize: const Size(32, 32),
+          buttonSize: const Size(44, 44),
+          padding: const EdgeInsets.all(2),
+          icon: ButtonIcon(
+            icon: isVideoCall
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SvgPicture.asset(AppImages.videoCallIcon),
+                    ],
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(AppImages.callIcon),
+                    ],
+                  ),
+          ),
+          onPressed: onCallFinished,
+          clickableBackgroundColor: AppColors.fieldsColor,
+          unclickableBackgroundColor: AppColors.fieldsColor,
+        );
+      },
+    );
+  }
 
-  // List<ZegoUIKitUser> getInvitesFromTextCtrl() {
-  //   List<ZegoUIKitUser> invitees = [];
-  //   if (_getUserDataCubit.chatStatus != ChatStatus.group) {
-  //     var inviteeIDs = _getUserDataCubit.userData;
-  //     inviteeIDs.id.split(",").forEach((inviteeUserID) {
-  //       if (inviteeUserID.isEmpty) {
-  //         return;
-  //       }
+  List<ZegoUIKitUser> getInvitesFromTextCtrl() {
+    List<ZegoUIKitUser> invitees = [];
+    if (_getUserDataCubit.chatStatus != ChatStatus.group) {
+      var inviteeIDs = _getUserDataCubit.userData;
+      inviteeIDs.id.split(",").forEach((inviteeUserID) {
+        if (inviteeUserID.isEmpty) {
+          return;
+        }
 
-  //       invitees.add(ZegoUIKitUser(
-  //         id: inviteeUserID,
-  //         name: inviteeIDs.name,
-  //       ));
-  //     });
-  //   } else {
-  //     var inviteeIDs = _getUserDataCubit.groupData.members;
-  //     for (var inviteeUserID in inviteeIDs) {
-  //       if (inviteeUserID.isEmpty) {
-  //         continue;
-  //       }
+        invitees.add(ZegoUIKitUser(
+          id: inviteeUserID,
+          name: inviteeIDs.name,
+        ));
+      });
+    } else {
+      var inviteeIDs = _getUserDataCubit.groupData.members;
+      for (var inviteeUserID in inviteeIDs) {
+        if (inviteeUserID.isEmpty) {
+          continue;
+        }
 
-  //       invitees.add(ZegoUIKitUser(
-  //         id: inviteeUserID,
-  //         name: _getUserDataCubit.groupData.name,
-  //       ));
-  //     }
-  //   }
+        invitees.add(ZegoUIKitUser(
+          id: inviteeUserID,
+          name: _getUserDataCubit.groupData.name,
+        ));
+      }
+    }
 
-  //   return invitees;
-  // }
+    return invitees;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -425,18 +426,18 @@ class ChatAppBar extends StatelessWidget {
               const SizedBox(width: 8),
               if (groupData.category == GroupCategory.group.name ||
                   _getUserDataCubit.chatStatus == ChatStatus.user)
-                // sendCallButton(
-                //   isVideoCall: true,
-                //   inviteeUsersIDTextCtrl: inviteeUsersIDTextCtrl,
-                // ),
+                sendCallButton(
+                  isVideoCall: true,
+                  inviteeUsersIDTextCtrl: inviteeUsersIDTextCtrl,
+                ),
                 SizedBox(),
               const SizedBox(width: 8),
               if (groupData.category == GroupCategory.group.name ||
                   _getUserDataCubit.chatStatus == ChatStatus.user)
-                // sendCallButton(
-                //   isVideoCall: false,
-                //   inviteeUsersIDTextCtrl: inviteeUsersIDTextCtrl,
-                // ),
+                sendCallButton(
+                  isVideoCall: false,
+                  inviteeUsersIDTextCtrl: inviteeUsersIDTextCtrl,
+                ),
                  SizedBox(),
             ],
           ),

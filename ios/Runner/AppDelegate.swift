@@ -13,24 +13,24 @@ import flutter_downloader
     disableICloudBackup()
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
+    
+    private func disableICloudBackup() {
+        do {
+          try setExcludeFromICloudBackup(filePath: NSHomeDirectory() + "/Library")
+          try setExcludeFromICloudBackup(filePath: NSHomeDirectory() + "/Documents")
+        } catch {
+          print("Couldn't disable iCloud Backup")
+        }
+      }
 
-  private func registerPlugins(registry: FlutterPluginRegistry) {
-    if !registry.hasPlugin("FlutterDownloaderPlugin") {
-      FlutterDownloaderPlugin.register(with: registry.registrar(forPlugin: "FlutterDownloaderPlugin")!)
+    private func setExcludeFromICloudBackup(filePath: String) throws {
+        let url = NSURL.fileURL(withPath: filePath) as NSURL
+        try url.setResourceValue(true, forKey: URLResourceKey.isExcludedFromBackupKey)
+      }
+}
+
+private func registerPlugins(registry: FlutterPluginRegistry) {
+    if (!registry.hasPlugin("FlutterDownloaderPlugin")) {
+       FlutterDownloaderPlugin.register(with: registry.registrar(forPlugin: "FlutterDownloaderPlugin")!)
     }
-  }
-
-  private func disableICloudBackup() {
-    do {
-      try setExcludeFromICloudBackup(filePath: NSHomeDirectory() + "/Library")
-      try setExcludeFromICloudBackup(filePath: NSHomeDirectory() + "/Documents")
-    } catch {
-      print("Couldn't disable iCloud Backup")
-    }
-  }
-
-  private func setExcludeFromICloudBackup(filePath: String) throws {
-    let url = NSURL.fileURL(withPath: filePath) as NSURL
-    try url.setResourceValue(true, forKey: URLResourceKey.isExcludedFromBackupKey)
-  }
 }

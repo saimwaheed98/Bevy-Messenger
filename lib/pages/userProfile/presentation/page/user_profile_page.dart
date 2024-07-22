@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 // import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import '../../../../core/di/service_locator_imports.dart';
 import '../../../../data/datasources/auth_datasource.dart';
@@ -81,73 +82,73 @@ class _UserProfilePageState extends State<UserProfilePage> {
 
   TextEditingController inviteeUsersIDTextCtrl = TextEditingController();
 
-  // Widget sendCallButton({
-  //   required bool isVideoCall,
-  //   required TextEditingController inviteeUsersIDTextCtrl,
-  //   void Function(String code, String message, List<String>)? onCallFinished,
-  // }) {
-  //   return ValueListenableBuilder<TextEditingValue>(
-  //     valueListenable: inviteeUsersIDTextCtrl,
-  //     builder: (context, inviteeUserID, _) {
-  //       List<ZegoUIKitUser> users = [
-  //         ZegoUIKitUser(
-  //           id: _authCubit.userData.id,
-  //           name: _authCubit.userData.name,
-  //         ),
-  //       ];
+  Widget sendCallButton({
+    required bool isVideoCall,
+    required TextEditingController inviteeUsersIDTextCtrl,
+    void Function(String code, String message, List<String>)? onCallFinished,
+  }) {
+    return ValueListenableBuilder<TextEditingValue>(
+      valueListenable: inviteeUsersIDTextCtrl,
+      builder: (context, inviteeUserID, _) {
+        List<ZegoUIKitUser> users = [
+          ZegoUIKitUser(
+            id: _authCubit.userData.id,
+            name: _authCubit.userData.name,
+          ),
+        ];
 
-  //       return ZegoSendCallInvitationButton(
-  //         isVideoCall: isVideoCall,
-  //         invitees: users,
-  //         resourceID: "bevy_messenger",
-  //         iconSize: const Size(32, 32),
-  //         buttonSize: const Size(44, 44),
-  //         onPressed: onCallFinished,
-  //         padding: const EdgeInsets.all(2),
-  //         icon: ButtonIcon(
-  //           icon: isVideoCall
-  //               ? Column(
-  //                   mainAxisAlignment: MainAxisAlignment.center,
-  //                   crossAxisAlignment: CrossAxisAlignment.center,
-  //                   mainAxisSize: MainAxisSize.min,
-  //                   children: [
-  //                     SvgPicture.asset(AppImages.videoCallIcon),
-  //                   ],
-  //                 )
-  //               : Column(
-  //                   mainAxisAlignment: MainAxisAlignment.center,
-  //                   crossAxisAlignment: CrossAxisAlignment.center,
-  //                   children: [
-  //                     SvgPicture.asset(AppImages.callIcon),
-  //                   ],
-  //                 ),
-  //         ),
-  //         borderRadius: 100,
-  //         clickableTextColor: AppColors.white,
-  //         clickableBackgroundColor: AppColors.fieldsColor,
-  //         unclickableBackgroundColor: AppColors.fieldsColor,
-  //       );
-  //     },
-  //   );
-  // }
+        return ZegoSendCallInvitationButton(
+          isVideoCall: isVideoCall,
+          invitees: users,
+          resourceID: "bevy_messenger",
+          iconSize: const Size(32, 32),
+          buttonSize: const Size(44, 44),
+          onPressed: onCallFinished,
+          padding: const EdgeInsets.all(2),
+          icon: ButtonIcon(
+            icon: isVideoCall
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SvgPicture.asset(AppImages.videoCallIcon),
+                    ],
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(AppImages.callIcon),
+                    ],
+                  ),
+          ),
+          borderRadius: 100,
+          clickableTextColor: AppColors.white,
+          clickableBackgroundColor: AppColors.fieldsColor,
+          unclickableBackgroundColor: AppColors.fieldsColor,
+        );
+      },
+    );
+  }
 
-  // List<ZegoUIKitUser> getInvitesFromTextCtrl() {
-  //   List<ZegoUIKitUser> invitees = [];
-  //   if (_otherUserDataCubit.userData != null) {
-  //     var inviteeIDs = _otherUserDataCubit.userData!;
-  //     inviteeIDs.id.split(",").forEach((inviteeUserID) {
-  //       if (inviteeUserID.isEmpty) {
-  //         return;
-  //       }
+  List<ZegoUIKitUser> getInvitesFromTextCtrl() {
+    List<ZegoUIKitUser> invitees = [];
+    if (_otherUserDataCubit.userData != null) {
+      var inviteeIDs = _otherUserDataCubit.userData!;
+      inviteeIDs.id.split(",").forEach((inviteeUserID) {
+        if (inviteeUserID.isEmpty) {
+          return;
+        }
 
-  //       invitees.add(ZegoUIKitUser(
-  //         id: inviteeUserID,
-  //         name: 'user_$inviteeUserID',
-  //       ));
-  //     });
-  //   }
-  //   return invitees;
-  // }
+        invitees.add(ZegoUIKitUser(
+          id: inviteeUserID,
+          name: 'user_$inviteeUserID',
+        ));
+      });
+    }
+    return invitees;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -406,16 +407,16 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         _otherUserDataCubit.userData?.id !=
                             _authCubit.userData.id)
                             SizedBox(),
-                      // sendCallButton(
-                      //     isVideoCall: true,
-                      //     inviteeUsersIDTextCtrl: inviteeUsersIDTextCtrl),
+                      sendCallButton(
+                          isVideoCall: true,
+                          inviteeUsersIDTextCtrl: inviteeUsersIDTextCtrl),
                     if (_otherUserDataCubit.userData != null &&
                         _otherUserDataCubit.userData?.id !=
                             _authCubit.userData.id)
                             SizedBox(),
-                      // sendCallButton(
-                      //     isVideoCall: false,
-                      //     inviteeUsersIDTextCtrl: inviteeUsersIDTextCtrl),
+                      sendCallButton(
+                          isVideoCall: false,
+                          inviteeUsersIDTextCtrl: inviteeUsersIDTextCtrl),
                   ],
                 )
               ],
