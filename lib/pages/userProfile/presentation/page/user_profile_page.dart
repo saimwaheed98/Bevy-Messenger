@@ -406,14 +406,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
                     if (_otherUserDataCubit.userData != null &&
                         _otherUserDataCubit.userData?.id !=
                             _authCubit.userData.id)
-                            SizedBox(),
                       sendCallButton(
                           isVideoCall: true,
                           inviteeUsersIDTextCtrl: inviteeUsersIDTextCtrl),
                     if (_otherUserDataCubit.userData != null &&
                         _otherUserDataCubit.userData?.id !=
                             _authCubit.userData.id)
-                            SizedBox(),
                       sendCallButton(
                           isVideoCall: false,
                           inviteeUsersIDTextCtrl: inviteeUsersIDTextCtrl),

@@ -12,3 +12,4 @@ final class AuthStateInitial extends AuthState {}
 final class AuthStateLoading extends AuthState {}
 
 final class AuthStateLoded extends AuthState {}
+final class AuthStateError extends AuthState {}

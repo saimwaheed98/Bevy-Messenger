@@ -1,15 +1,14 @@
-
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:bevy_messenger/bloc/cubits/auth_cubit.dart';
 import 'package:bevy_messenger/core/di/service_locator_imports.dart';
-import 'package:bevy_messenger/data/datasources/auth_datasource.dart';
 import 'package:bevy_messenger/utils/app_text_style.dart';
 import 'package:bevy_messenger/utils/colors.dart';
 import 'package:bevy_messenger/utils/images_path.dart';
 import 'package:bevy_messenger/utils/screen_sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../bloc/cubits/check_app_update_cubit.dart';
 import '../../../bloc/cubits/internet_con_cubit.dart';
 import '../../../routes/routes_imports.gr.dart';
@@ -30,21 +29,28 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   initState() {
+    initData();
     super.initState();
+  }
+
+  Future initData() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('userId');
     if (Platform.isAndroid) {
       _checkAppUpdateCubit.checkForUpdate();
     }
-    _internetConCbit.checkInternetConnection();
-    _authCubit.getSelfInfo();
-    if (AuthDataSource.auth.currentUser == null) {
+    // _internetConCbit.checkInternetConnection();
+    if (userId?.isEmpty ?? false) {
       _authCubit.getOtherUsernames();
+    } else {
+      _authCubit.getSelfInfo();
     }
-    _navigateToNextScreen();
+    _navigateToNextScreen(userId);
   }
 
-  _navigateToNextScreen() {
+  _navigateToNextScreen(String? userId) async {
     Future.delayed(const Duration(seconds: 3), () {
-      if (AuthDataSource.auth.currentUser != null) {
+      if (userId?.isNotEmpty ?? false) {
         AutoRouter.of(context).replace(const HomeBottomBarRoute());
       } else {
         AutoRouter.of(context).replace(const GetStartedPageRoute());

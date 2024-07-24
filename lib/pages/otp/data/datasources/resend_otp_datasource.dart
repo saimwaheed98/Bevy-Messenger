@@ -1,10 +1,9 @@
 import 'dart:developer';
 
+import 'package:email_otp/email_otp.dart';
 import 'package:flutter/material.dart';
-
 import '../../../../bloc/cubits/internet_con_cubit.dart';
 import '../../../../core/di/service_locator_imports.dart';
-import '../../../../data/datasources/auth_datasource.dart';
 import '../../../../helper/toast_messages.dart';
 import '../../../signup/presentation/bloc/cubit/create_profile_cubit.dart';
 
@@ -19,33 +18,43 @@ class ResendOtpDataSourceImpl implements ResendOtpDataSource {
     final CreateProfileCubit createProfileCubit = Di().sl<CreateProfileCubit>();
     // create user profile
     try {
-      if (createProfileCubit.resendToken.toString().isEmpty) {
-        WarningHelper.showWarningToast(
-            "Error while sending code please try again later", context);
-        return 'Please try again';
-      }
       await internetConCubit.checkInternetConnection();
       if (internetConCubit.isConnected) {
-        await AuthDataSource.auth.verifyPhoneNumber(
-          phoneNumber: phoneNumber,
-          timeout: const Duration(seconds: 60),
-          verificationCompleted: (phoneAuthCredential) {
-            log('message creating profile success: $phoneAuthCredential');
-          },
-          verificationFailed: (error) {
-            WarningHelper.showErrorToast(
-                'Phone number verification failed', context);
-            log('message creating profile failed: $error');
-          },
-          codeSent: (verificationId, forceResendingToken) {
-            createProfileCubit.getOtpData(
-                verificationId, forceResendingToken ?? 0);
-          },
-          codeAutoRetrievalTimeout: (verificationId) {
-            log('code retrival time our: $verificationId');
-          },
+        EmailOTP.config(
+          appEmail: "admin@ourbevy.com",
+          appName: "Bevy Messenger",
+          expiry: 60000,
+          otpLength: 6,
+          otpType: OTPType.numeric,
         );
-        return "success";
+        bool result = await EmailOTP.sendOTP(
+            email: createProfileCubit.emailController.text);
+        if (result != true) {
+          WarningHelper.showErrorToast('Error while sending otp', context);
+          log('message creating profile failed: ');
+          return 'Phone number verification failed';
+        }else{
+          return "success";
+        }
+        // await AuthDataSource.auth.verifyPhoneNumber(
+        //   phoneNumber: phoneNumber,
+        //   timeout: const Duration(seconds: 60),
+        //   verificationCompleted: (phoneAuthCredential) {
+        //     log('message creating profile success: $phoneAuthCredential');
+        //   },
+        //   verificationFailed: (error) {
+        //     WarningHelper.showErrorToast(
+        //         'Phone number verification failed', context);
+        //     log('message creating profile failed: $error');
+        //   },
+        //   codeSent: (verificationId, forceResendingToken) {
+        //     createProfileCubit.getOtpData(
+        //         verificationId, forceResendingToken ?? 0);
+        //   },
+        //   codeAutoRetrievalTimeout: (verificationId) {
+        //     log('code retrival time our: $verificationId');
+        //   },
+        // );
       } else {
         // ignore: use_build_context_synchronously
         WarningHelper.showErrorToast(

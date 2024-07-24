@@ -9,6 +9,8 @@ import 'package:bevy_messenger/pages/userProfile/presentation/widgets/user_block
 import 'package:bevy_messenger/utils/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 // import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 
 import '../../../../routes/routes_imports.gr.dart';
@@ -67,8 +69,10 @@ class EditProfilePopupMenue extends StatelessWidget {
             value: 'logout',
             onTap: () async {
              try{
+              SharedPreferences preferences = await SharedPreferences.getInstance();
+              preferences.clear();
                await AuthDataSource.updateActiveStatus(false);
-              // await ZegoUIKitPrebuiltCallInvitationService().uninit();
+              await ZegoUIKitPrebuiltCallInvitationService().uninit();
               await AuthDataSource.auth.signOut().then((value) {
                 AutoRouter.of(context).pushAndPopUntil(
                     predicate: (route) => false, const GetStartedPageRoute());

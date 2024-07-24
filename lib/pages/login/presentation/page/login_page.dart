@@ -163,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                                           .passwordController.text.isNotEmpty &&
                                       _createProfileCubit
                                           .emailController.text.isNotEmpty) {
-                                    // await _loginCubit.login(context);
+                                    await _loginCubit.login(context);
                                   }
                                 },
                                 buttonText: "Login",

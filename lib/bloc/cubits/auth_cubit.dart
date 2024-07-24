@@ -7,6 +7,7 @@ import 'package:bevy_messenger/pages/signup/data/models/usermodel/user_model.dar
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../pages/subscription/data/model/subscription_model.dart';
 part '../states/auth_state.dart';
@@ -122,24 +123,40 @@ class AuthCubit extends Cubit<AuthState> {
     emit(AuthStateLoded());
   }
 
-  Future<void> getSelfInfo() async {
-    emit(AuthStateLoading());
-    if (AuthDataSource.auth.currentUser == null) {
-      emit(AuthStateLoded());
+Future<void> getSelfInfo() async {
+  emit(AuthStateLoading());
+  
+  try {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final String? userId = prefs.getString('userId');
+    
+    if (userId == null || userId.isEmpty) {
+      emit(AuthStateError());
       return;
-    } else {
-      try {
-        await AuthDataSource.getSelfInfo().then((value) async {
-          userData = value;
-          var list = await AuthDataSource.getSubscriptions();
-          userSubscriptions = list;
-          emit(AuthStateLoded());
-        });
-      } catch (e) {
-        log(e.toString());
-      }
     }
+
+    await _fetchAndSetUserInfo();
+  } catch (e) {
+    log('Failed to get self info: ${e.toString()}');
+    emit(AuthStateError());
   }
+}
+
+Future<void> _fetchAndSetUserInfo() async {
+  try {
+    final userInfo = await AuthDataSource.getSelfInfo();
+    userData = userInfo;
+
+    final subscriptions = await AuthDataSource.getSubscriptions();
+    userSubscriptions = subscriptions;
+
+     emit(AuthStateLoded());
+  } catch (e) {
+    log('Failed to fetch user info or subscriptions: ${e.toString()}');
+    emit(AuthStateError());
+  }
+}
+
 
   // update the subscription status
   removeSubscriptionList(String id) {
