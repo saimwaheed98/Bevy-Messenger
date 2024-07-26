@@ -72,7 +72,7 @@ class _PhoneTextFieldState extends State<PhoneTextField> {
           //       errorText: "Make Sure You Enter The Correct PhoneNumber",
           //       context),
           // ]),
-          countrySelectorNavigator: const CountrySelectorNavigator.page(),
+          countrySelectorNavigator: const CountrySelectorNavigator.draggableBottomSheet(),
           onChanged: (phoneNumber) {
             _createProfileCubit.phoneController.text =
                 '+${phoneNumber.countryCode}${phoneNumber.nsn}';
