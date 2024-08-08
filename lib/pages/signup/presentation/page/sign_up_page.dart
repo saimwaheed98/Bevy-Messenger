@@ -224,16 +224,14 @@ class _LoginPageState extends State<SignUpPage> {
                     ),
                     const Spacer(),
                     BlocBuilder(
-                      bloc: _otpCreateProfileCubit,
+                      bloc: _createProfileCubit,
                       builder: (context, state) {
                         return GestureContainer(
-                            isLoading: _otpCreateProfileCubit.isVerifyingOtp,
+                            isLoading: _createProfileCubit.isCreatingProfile,
                             buttonColor: _createProfileCubit.checkFieldsSignUp()
                                 ? AppColors.redColor
                                 : AppColors.textColor,
                             onPressed: () {
-                              // _otpCreateProfileCubit.verifyOtpAndCreateProfile(
-                              //     _otpCreateProfileCubit.getOtp, context);
                               if(_createProfileCubit.isCreatingProfile) return;
                               _createProfileCubit.createProfile(context);
                             },

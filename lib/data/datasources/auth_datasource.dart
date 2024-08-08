@@ -29,7 +29,8 @@ class AuthDataSource {
   static Future<String> getFirebaseMessagingToken() async {
     String userPushToken = "";
     await messaging.requestPermission();
-    await messaging.getToken().then((pushToken) {
+    await messaging.getToken(
+    ).then((pushToken) {
       if (pushToken != null) {
         debugPrint('Push Token: $pushToken');
         userPushToken = pushToken;
@@ -184,13 +185,19 @@ class AuthDataSource {
   }
 
   // update online status
-  static Future<void> updateActiveStatus(bool isOnline,
-      {String? pushToken}) async {
+  static Future<void> updateActiveStatus(bool isOnline,) async {
     final AuthCubit authCubit = Di().sl<AuthCubit>();
     await firestore.collection('users').doc(authCubit.userData.id).update({
       'isOnline': isOnline,
       'lastActive': DateTime.now().millisecondsSinceEpoch.toString(),
-      "pushToken": pushToken ?? authCubit.userData.pushToken
+    });
+  }
+
+  // update push token
+  static Future<void> updatePushToken(String pushToken) async {
+    final AuthCubit authCubit = Di().sl<AuthCubit>();
+    await firestore.collection('users').doc(authCubit.userData.id).update({
+      'pushToken': pushToken,
     });
   }
 

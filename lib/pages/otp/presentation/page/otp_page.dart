@@ -92,7 +92,7 @@ class OtpPage extends StatelessWidget {
                             _otpCreateProfileCubit.verifyOtpAndCreateProfile(
                                 _otpCreateProfileCubit.getOtp, context);
                           },
-                          buttonText: "Continiue",
+                          buttonText: "Continue",
                           heroTag: 'otp');
                     },
                   ),

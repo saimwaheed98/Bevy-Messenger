@@ -41,12 +41,14 @@ class LoginDataSourceImpl extends LoginDataSource {
               .then((value) async {
             var userData =
                 UserModel.fromJson(value.data() as Map<String, dynamic>);
-            authCubit.getUserDataLocal(userData);
             final SharedPreferences prefs =
                 await SharedPreferences.getInstance();
             prefs.setString('userId', userData.id);
             String pushToken = await AuthDataSource.getFirebaseMessagingToken();
-            await AuthDataSource.updateActiveStatus(true, pushToken: pushToken);
+            await AuthDataSource.updateActiveStatus(true,);
+            userData = userData.copyWith(pushToken: pushToken);
+            await AuthDataSource.updatePushToken(pushToken,);
+            authCubit.getUserDataLocal(userData);
             ZegoUIKitPrebuiltCallInvitationService().init(
               appID: ZegoCLouds.appId,
               appSign: ZegoCLouds.appSignIn,

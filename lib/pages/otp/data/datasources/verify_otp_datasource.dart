@@ -22,7 +22,7 @@ class VerifyOtpDataSourceImpl extends VerifyOtpDataSource {
   @override
   Future<String> verifyOtpAndCreateProfile(
       String otp, BuildContext context) async {
-    final Completer<String> completer = Completer();
+    String result = "";
     final CreateProfileCubit createProfileCubit = Di().sl<CreateProfileCubit>();
     final AuthCubit authCubit = Di().sl<AuthCubit>();
 
@@ -56,6 +56,7 @@ class VerifyOtpDataSourceImpl extends VerifyOtpDataSource {
               .set(data.toJson());
           log('User created successfully $data');
           authCubit.getUserDataLocal(data);
+
           final SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString('userId', userCredential.user!.uid);
           ZegoUIKitPrebuiltCallInvitationService().init(
@@ -96,25 +97,23 @@ class VerifyOtpDataSourceImpl extends VerifyOtpDataSource {
               return config;
             },
           );
-          completer.complete('success');
+          return result = "success";
         }).catchError((error) {
           log('Error during createUserWithEmailAndPassword: $error');
           WarningHelper.showWarningToast(
               "Error while creating profile please try again", context);
-          completer.completeError(
-              'Error during createUserWithEmailAndPassword: $error');
+          return result = "Error during createUserWithEmailAndPassword: $error";
         });
-      }else{
-        WarningHelper.showWarningToast(
-            "Invalid OTP", context);
-        completer.completeError('Invalid OTP');
+      } else {
+        WarningHelper.showWarningToast("Invalid OTP", context);
+        return result = "Invalid OTP";
       }
     } catch (e, stackTrace) {
       log('Error while verify otp: $e $stackTrace');
       WarningHelper.showWarningToast(
           "Error while creating profile please try again", context);
-      completer.completeError('Error while verify otp: $e');
+      return "Error while verify otp: $e";
     }
-    return completer.future;
+    return result;
   }
 }

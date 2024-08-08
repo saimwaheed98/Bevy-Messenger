@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:bevy_messenger/bloc/cubits/auth_cubit.dart';
 import 'package:bevy_messenger/core/di/service_locator_imports.dart';
+import 'package:bevy_messenger/data/datasources/toogle_helper.dart';
 import 'package:bevy_messenger/utils/app_text_style.dart';
 import 'package:bevy_messenger/utils/colors.dart';
 import 'package:bevy_messenger/utils/images_path.dart';
@@ -10,7 +11,7 @@ import 'package:bevy_messenger/utils/screen_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../../bloc/cubits/check_app_update_cubit.dart';
-import '../../../bloc/cubits/internet_con_cubit.dart';
+// import '../../../bloc/cubits/internet_con_cubit.dart';
 import '../../../routes/routes_imports.gr.dart';
 
 @RoutePage()
@@ -23,9 +24,10 @@ class SplashPage extends StatefulWidget {
 
 class _SplashPageState extends State<SplashPage> {
   final AuthCubit _authCubit = Di().sl<AuthCubit>();
-  final InternetConCubit _internetConCbit = Di().sl<InternetConCubit>();
+  // final InternetConCubit _internetConCbit = Di().sl<InternetConCubit>();
   final CheckAppUpdateCubit _checkAppUpdateCubit =
       Di().sl<CheckAppUpdateCubit>();
+  late bool isToogleAble;
 
   @override
   initState() {

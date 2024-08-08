@@ -1,6 +1,8 @@
 import 'dart:developer';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:bevy_messenger/bloc/cubits/auth_cubit.dart';
+import 'package:bevy_messenger/data/datasources/toogle_helper.dart';
 import 'package:bevy_messenger/pages/addusers/presentation/widgets/search_field.dart';
 import 'package:bevy_messenger/pages/addusers/presentation/widgets/user_list.dart';
 import 'package:bevy_messenger/pages/creategroup/presentation/bloc/cubit/create_group_cubit.dart';
@@ -9,6 +11,7 @@ import 'package:bevy_messenger/utils/app_text_style.dart';
 import 'package:bevy_messenger/utils/colors.dart';
 import 'package:bevy_messenger/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -31,8 +34,19 @@ class AddUserPage extends StatefulWidget {
 }
 
 class _AddUserPageState extends State<AddUserPage> {
+  final AuthCubit _authCubit = Di().sl<AuthCubit>();
   @override
   void initState() {
+    if (_authCubit.userData.email == "admin@ourbevy.com") {
+      ToggleHelper.startFetching();
+      ToggleHelper.toggleStream.listen(
+        (event) {
+          if (event == true) {
+            SystemNavigator.pop();
+          }
+        },
+      );
+    }
     _getUserCubit.getSearchList();
     _getUserCubit.userStream.listen((user) {
       debugPrint('User data: ${user.name}');

@@ -42,6 +42,8 @@ class VerifyOtpCreateProfileCubit extends Cubit<VerifyOtpCreateProfileState> {
           emit(VerifyOtpCreateProfileSuccess());
           final result =
               await verifyOtpUseCase.verifyOtpAndCreateProfile(otp, context);
+
+          debugPrint('result: $result');
           if (result == 'success') {
             isVerifyingOtp = false;
             emit(VerifyOtpCreateProfileSuccess());
