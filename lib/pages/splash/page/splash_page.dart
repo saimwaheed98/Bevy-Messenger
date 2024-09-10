@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:bevy_messenger/bloc/cubits/auth_cubit.dart';
 import 'package:bevy_messenger/core/di/service_locator_imports.dart';
-import 'package:bevy_messenger/data/datasources/toogle_helper.dart';
 import 'package:bevy_messenger/utils/app_text_style.dart';
 import 'package:bevy_messenger/utils/colors.dart';
 import 'package:bevy_messenger/utils/images_path.dart';
@@ -42,11 +41,11 @@ class _SplashPageState extends State<SplashPage> {
       _checkAppUpdateCubit.checkForUpdate();
     }
     // _internetConCbit.checkInternetConnection();
-    if (userId?.isEmpty ?? false) {
+    // if (userId?.isEmpty ?? false) {
       _authCubit.getOtherUsernames();
-    } else {
+    // } else {
       _authCubit.getSelfInfo();
-    }
+    // }
     _navigateToNextScreen(userId);
   }
 

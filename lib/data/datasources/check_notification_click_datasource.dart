@@ -10,7 +10,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
-import '../../utils/colors.dart';
 
 abstract class CheckNotificationClickDataSource {
   void checkNotificationClick(BuildContext context);
@@ -73,25 +72,6 @@ class CheckNotificationClickDataSourceImpl
       priority: Priority.high,
       playSound: true,
       ticker: 'ticker',
-      actions: [
-        const AndroidNotificationAction('cancel', 'done',
-            cancelNotification: true,
-            allowGeneratedReplies: true,
-            titleColor: AppColors.buttonColor,
-            showsUserInterface: true),
-        const AndroidNotificationAction('reply', 'Reply',
-            allowGeneratedReplies: true,
-            inputs: [
-              AndroidNotificationActionInput(
-                  label: 'Reply',
-                  allowFreeFormInput: true,
-                  choices: [
-                    'Yes',
-                    'No',
-                    'thanks',
-                  ])
-            ]),
-      ],
     );
     DarwinNotificationDetails iOSInitialization =
         const DarwinNotificationDetails(

@@ -5,10 +5,12 @@ import 'package:bevy_messenger/bloc/cubits/auth_cubit.dart';
 import 'package:bevy_messenger/core/di/service_locator_imports.dart';
 import 'package:bevy_messenger/data/datasources/auth_datasource.dart';
 import 'package:bevy_messenger/helper/cached_image_helper.dart';
+import 'package:bevy_messenger/helper/toast_messages.dart';
 import 'package:bevy_messenger/pages/bottombar/presentation/bloc/cubit/bottom_bar_cubit.dart';
 import 'package:bevy_messenger/pages/chatpage/presentation/bloc/cubit/get_user_data_cubit.dart';
 import 'package:bevy_messenger/pages/chatpage/presentation/widgets/chat_data_dialouge.dart';
 import 'package:bevy_messenger/pages/creategroup/data/models/chat_group_model.dart';
+import 'package:bevy_messenger/pages/creategroup/presentation/bloc/cubit/create_group_cubit.dart';
 import 'package:bevy_messenger/pages/signup/data/models/usermodel/user_model.dart';
 import 'package:bevy_messenger/routes/routes_imports.gr.dart';
 import 'package:bevy_messenger/utils/app_text_style.dart';
@@ -243,10 +245,16 @@ class ChatAppBar extends StatelessWidget {
                 child: InkWell(
                   onTap: () {
                     if (_getUserDataCubit.chatStatus == ChatStatus.user) {
-                      _otherUserDataCubit
-                          .getUserData(_getUserDataCubit.userData);
+                      _createGroupCubit
+                          .changeGroupCategory(GroupCategory.group);
+                      _createGroupCubit.addParticipiants(
+                          _getUserDataCubit.userData);
                       AutoRouter.of(context)
-                          .push(UserProfilePageRoute(isGroup: false));
+                          .push(CreateGroupRoute(isRoom: false));
+                      // _otherUserDataCubit
+                      //     .getUserData(_getUserDataCubit.userData);
+                      // AutoRouter.of(context)
+                      //     .push(UserProfilePageRoute(isGroup: false));
                     } else {
                       AutoRouter.of(context)
                           .replace(const GroupInfoPageRoute());
@@ -426,19 +434,97 @@ class ChatAppBar extends StatelessWidget {
               const SizedBox(width: 8),
               if (groupData.category == GroupCategory.group.name ||
                   _getUserDataCubit.chatStatus == ChatStatus.user)
-                sendCallButton(
-                  isVideoCall: true,
-                  inviteeUsersIDTextCtrl: inviteeUsersIDTextCtrl,
+                 Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        WarningHelper.showWarningToast("Coming Soon", context);
+                      },
+                      child: Container(
+                        height: 44,
+                        width: 44,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.fieldsColor,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              AppImages.videoCallIcon,
+                              color: AppColors.white,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Transform.rotate(
+                      angle: 45,
+                      child: Container(
+                        height: 2,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          color: AppColors.redColor,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(),
+              // sendCallButton(
+              //   isVideoCall: true,
+              //   inviteeUsersIDTextCtrl: inviteeUsersIDTextCtrl,
+              // ),
+              // SizedBox(),
               const SizedBox(width: 8),
               if (groupData.category == GroupCategory.group.name ||
                   _getUserDataCubit.chatStatus == ChatStatus.user)
-                sendCallButton(
-                  isVideoCall: false,
-                  inviteeUsersIDTextCtrl: inviteeUsersIDTextCtrl,
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        WarningHelper.showWarningToast("Coming Soon", context);
+                      },
+                      child: Container(
+                        height: 44,
+                        width: 44,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.fieldsColor,
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              AppImages.callIcon,
+                              color: AppColors.white,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Transform.rotate(
+                      angle: 45,
+                      child: Container(
+                        height: 2,
+                        width: 40,
+                        decoration: BoxDecoration(
+                          color: AppColors.redColor,
+                          borderRadius: BorderRadius.circular(2),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                 SizedBox(),
+              // sendCallButton(
+              //   isVideoCall: false,
+              //   inviteeUsersIDTextCtrl: inviteeUsersIDTextCtrl,
+              // ),
+              //  SizedBox(),
             ],
           ),
         );
@@ -450,3 +536,4 @@ class ChatAppBar extends StatelessWidget {
 final OtherUserDataCubit _otherUserDataCubit = Di().sl<OtherUserDataCubit>();
 final BottomBarCubit _bottomBarCubit = Di().sl<BottomBarCubit>();
 final AuthCubit _authCubit = Di().sl<AuthCubit>();
+final CreateGroupCubit _createGroupCubit = Di().sl<CreateGroupCubit>();

@@ -61,12 +61,12 @@ class ParticipiantContainer extends StatelessWidget {
                     color: Colors.green,
                     fontWeight: FontWeight.w400),
               ),
-            if (user.id != _authCubit.userData.id)
-              IconButton(
-                  onPressed: () {
-                    _createGroupCubit.addParticipiants(user);
-                  },
-                  icon: SvgPicture.asset(AppImages.leaveGroup))
+            // if (user.id != _authCubit.userData.id)
+            //   IconButton(
+            //       onPressed: () {
+            //         _createGroupCubit.addParticipiants(user);
+            //       },
+            //       icon: SvgPicture.asset(AppImages.leaveGroup))
           ],
         ),
       ),

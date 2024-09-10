@@ -75,6 +75,7 @@ class _MyAppState extends State<GalleryPage> {
               ? const Center(child: Text('No albums found'))
               : GridView.builder(
                   padding: const EdgeInsets.all(5),
+                  reverse: false,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
                     mainAxisSpacing: 5,

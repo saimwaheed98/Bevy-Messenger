@@ -5,6 +5,7 @@ import 'package:bevy_messenger/helper/image_picker.dart';
 import 'package:bevy_messenger/pages/chatpage/presentation/bloc/cubit/get_user_data_cubit.dart';
 import 'package:bevy_messenger/pages/chatpage/presentation/bloc/cubit/send_file_message_cubit.dart';
 import 'package:bevy_messenger/pages/chatpage/presentation/bloc/cubit/send_group_file_message_cubit.dart';
+import 'package:bevy_messenger/utils/files_ext_paths.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:file_picker/file_picker.dart';
@@ -48,13 +49,13 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
   }
 
   // get the image file
-  getImageFile(File image){
+  getImageFile(File image) {
     emit(ImagePickerPicking());
     this.image = image;
     emit(ImagePickerInitial());
   }
 
-  getDocsFile(File docs){
+  getDocsFile(File docs) {
     emit(ImagePickerPicking());
     this.docs = docs;
     emit(ImagePickerInitial());
@@ -82,23 +83,23 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
   // pick video
 
   // get the video file
-  getVideoFile(File video){
+  getVideoFile(File video) {
     emit(ImagePickerPicking());
     this.video = video;
     emit(ImagePickerInitial());
   }
 
-
   Future<File> pickVideo() async {
     emit(ImagePickerPicking());
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-        allowCompression: true,
-        allowMultiple: false,
-        type: FileType.custom,
-        allowedExtensions: ['mp4', 'mkv']);
-    if (result != null) {
-      File file = File(result.files.single.path!);
-      video = file;
+    final result = await _pickImage.pickMedia();
+    if (result.path.isNotEmpty) {
+      File file = result;
+      if (imageExt.contains(file.path.split(".").last)) {
+        image = file;
+      } else {
+        video = file;
+      }
+
       emit(ImagePickerPicked());
       return file;
     } else {
@@ -121,7 +122,7 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
         Di().sl<SendGroupFileMessageCubit>();
     final GetUserDataCubit getUserDataCubit = Di().sl<GetUserDataCubit>();
     isSending = true;
-    emit(AudioRecordedState(voiceFile ?? File(""),isSending: true));
+    emit(AudioRecordedState(voiceFile ?? File(""), isSending: true));
     if (getUserDataCubit.userData == null) {
       await sendGroupFile.sendFileMessage(
           voiceFile!, "", "", MessageType.audio);
@@ -140,7 +141,6 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
     emit(AudioEmptyState());
   }
 
-
   Future<String?> startRecording() async {
     String? path;
     var id = const Uuid().v4();
@@ -149,37 +149,37 @@ class ImagePickerCubit extends Cubit<ImagePickerState> {
       Directory appDocDir = await getApplicationDocumentsDirectory();
       String appDocPath = appDocDir.path;
       path = '$appDocPath/$id.flac';
-        await record.start(
-          path: path,
-          const RecordConfig(
-            androidConfig: AndroidRecordConfig(
-              muteAudio: true,
-              useLegacy: true,
-            ),
-            encoder: AudioEncoder.flac,
-            echoCancel: true,
-            noiseSuppress: true,
-            sampleRate: 44100,
-            numChannels: 2,
-            bitRate: 128000,
+      await record.start(
+        path: path,
+        const RecordConfig(
+          androidConfig: AndroidRecordConfig(
+            muteAudio: true,
+            useLegacy: true,
           ),
-        );
+          encoder: AudioEncoder.flac,
+          echoCancel: true,
+          noiseSuppress: true,
+          sampleRate: 44100,
+          numChannels: 2,
+          bitRate: 128000,
+        ),
+      );
     }
     return path;
   }
 
-
   Future<void> stopRecording() async {
     emit(ImagePickerPicking());
     final path = await record.stop();
-      voiceFile = File(path ?? "");
-      emit(AudioRecordedState(voiceFile!));
+    voiceFile = File(path ?? "");
+    emit(AudioRecordedState(voiceFile!));
   }
 
   void cancelRecording() {
     voiceFile = null;
     emit(AudioEmptyState());
   }
+
   // clear the image
   void clearImage() {
     emit(ImagePickerPicking());

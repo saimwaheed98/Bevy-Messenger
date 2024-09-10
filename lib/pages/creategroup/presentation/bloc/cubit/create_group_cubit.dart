@@ -31,19 +31,32 @@ class CreateGroupCubit extends Cubit<CreateGroupState> {
 
   // empty the list of participants
   emptyParticipants() {
-     emit(AddingParticipiants());
-    participants = [];
+    emit(AddingParticipiants());
+    participants = List<UserModel>.empty();
+    emit(ParticipiantsAdded());
+  }
+
+  // get the participiant data
+  getParticpants(List<UserModel> users) {
+    emit(AddingParticipiants());
+    participants = users;
     emit(ParticipiantsAdded());
   }
 
   addParticipiants(UserModel userId) {
+    List<UserModel> parti = List.from(participants);
     emit(AddingParticipiants());
-    if (!participants.contains(userId)) {
-      participants.add(userId);
+    if (!parti.contains(userId)) {
+      parti.add(userId);
+      participants = parti;
       log("data $userId");
-    } else {
-      participants.remove(userId);
     }
+    emit(ParticipiantsAdded());
+  }
+
+  removeParticipiant(UserModel userId) {
+    emit(AddingParticipiants());
+    participants.remove(userId);
     emit(ParticipiantsAdded());
   }
 
@@ -58,7 +71,7 @@ class CreateGroupCubit extends Cubit<CreateGroupState> {
   // get the group category
   GroupCategory groupCategory = GroupCategory.group;
 
-  changeGroupCategory(GroupCategory category){
+  changeGroupCategory(GroupCategory category) {
     emit(CreatingGroup());
     groupCategory = category;
     log("category of the room is ${groupCategory.name}");
@@ -69,44 +82,44 @@ class CreateGroupCubit extends Cubit<CreateGroupState> {
   bool isCreatingGroup = false;
 
   // create the group by getting value
-  Future<GroupModel> createGroup(BuildContext context,bool isRoom) async {
+  Future<GroupModel> createGroup(BuildContext context, bool isRoom) async {
     final AuthCubit authCubit = Di().sl<AuthCubit>();
     final ImagePickerCubit getImage = Di().sl<ImagePickerCubit>();
     var groupId = const Uuid().v4();
     var time = DateTime.now().millisecondsSinceEpoch.toString();
 
-    if (nameController.text.isNotEmpty && (isRoom ? descriptionController.text.isNotEmpty : true)) {
+    if (nameController.text.isNotEmpty &&
+        (isRoom ? descriptionController.text.isNotEmpty : true)) {
       emit(CreatingGroup());
       isCreatingGroup = true;
       String groupImage = "";
-      if(getImage.image != null){
-      groupImage =
-          await AuthDataSource.uploadGroupImage(getImage.image ?? File(""));
+      if (getImage.image != null) {
+        groupImage =
+            await AuthDataSource.uploadGroupImage(getImage.image ?? File(""));
       }
       participants.add(authCubit.userData);
       GroupModel groupData = GroupModel(
-        // data of admin
-        adminId: authCubit.userData.id,
-        adminImage: authCubit.userData.imageUrl,
-        adminName: authCubit.userData.name,
-        // data of the group
-        id: groupId,
-        createdAt: time,
-        createdBy: authCubit.userData.id,
-        description: descriptionController.text,
-        name: nameController.text,
-        imageUrl: groupImage,
-        members: participants.map((e) => e.id).toList(),
-        notification: true,
-        premium: premiumGroup,
-        onlineUsers: [],
-        lastMessage: "",
-        lastMessageTime: "",
-        updatedAt: time,
-        updatedBy: authCubit.userData.id,
-        // check the category of the group
-        category: groupCategory.name
-      );
+          // data of admin
+          adminId: authCubit.userData.id,
+          adminImage: authCubit.userData.imageUrl,
+          adminName: authCubit.userData.name,
+          // data of the group
+          id: groupId,
+          createdAt: time,
+          createdBy: authCubit.userData.id,
+          description: descriptionController.text,
+          name: nameController.text,
+          imageUrl: groupImage,
+          members: participants.map((e) => e.id).toList(),
+          notification: true,
+          premium: premiumGroup,
+          onlineUsers: [],
+          lastMessage: "",
+          lastMessageTime: "",
+          updatedAt: time,
+          updatedBy: authCubit.userData.id,
+          // check the category of the group
+          category: groupCategory.name);
       String result = await _createGroupUseCase.createGroup(context, groupData);
       if (result == "success") {
         WarningHelper.showSuccesToast(
@@ -125,9 +138,10 @@ class CreateGroupCubit extends Cubit<CreateGroupState> {
         throw "Please fill all the field";
       }
     } else {
-      if(isRoom ? descriptionController.text.isEmpty : false){
-        WarningHelper.showWarningToast("Please Enter the room description", context);
-      }else{
+      if (isRoom ? descriptionController.text.isEmpty : false) {
+        WarningHelper.showWarningToast(
+            "Please Enter the room description", context);
+      } else {
         WarningHelper.showWarningToast("Please fill all the field", context);
       }
       throw "Please fill all the field";

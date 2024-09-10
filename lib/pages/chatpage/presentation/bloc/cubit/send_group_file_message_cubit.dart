@@ -5,6 +5,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:uuid/uuid.dart';
 import '../../../../../bloc/cubits/auth_cubit.dart';
+import '../../../../../bloc/cubits/send_notification_cubit.dart';
 import '../../../../../core/di/service_locator_imports.dart';
 import '../../../data/model/message_model.dart';
 import 'get_user_data_cubit.dart';
@@ -22,6 +23,8 @@ class SendGroupFileMessageCubit extends Cubit<SendGroupFileMessageState> {
       File file, String message, String secMessage, MessageType type) async {
         // final SendFileMessageCubit sendFileMessageCubit = Di().sl<SendFileMessageCubit>();
     var uid = const Uuid().v4();
+            final SendNotificationCubit sendNotificationCubit =
+        Di().sl<SendNotificationCubit>();
     // sendFileMessageCubit.sendingMessageId = uid;
     final AuthCubit authCubit = Di().sl<AuthCubit>();
     var time = DateTime.now().millisecondsSinceEpoch.toString();
@@ -46,6 +49,12 @@ class SendGroupFileMessageCubit extends Cubit<SendGroupFileMessageState> {
       senderImage: authCubit.userData.imageUrl,
     );
     await _sendFileMessageUseCase.sendGroupFileMessage(file, messageData);
+    await sendNotificationCubit.sendNotification(
+      body: "Sented a file",
+      title: authCubit.userData.name,
+      userIds: getUserDataCubit.groupData.members,
+      userId: ""
+    );
     isSending = false;
     log(message);
     emit(SendGroupFileMessageSuccess());

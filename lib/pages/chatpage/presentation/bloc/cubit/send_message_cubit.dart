@@ -13,6 +13,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../../bloc/cubits/send_notification_cubit.dart';
 import 'send_file_message_cubit.dart';
 part '../state/send_message_state.dart';
 
@@ -26,6 +27,8 @@ class SendMessageCubit extends Cubit<SendMessageState> {
     final AuthCubit authCubit = Di().sl<AuthCubit>();
     var time = DateTime.now().millisecondsSinceEpoch.toString();
     final GetUserDataCubit getUserDataCubit = Di().sl<GetUserDataCubit>();
+        final SendNotificationCubit sendNotificationCubit =
+        Di().sl<SendNotificationCubit>();
     final SendGroupMessageCubit sendGroupMessageCubit =
         Di().sl<SendGroupMessageCubit>();
     final SendFileMessageCubit sendFileMessageCubit =
@@ -63,11 +66,12 @@ class SendMessageCubit extends Cubit<SendMessageState> {
         );
         await _sendMessageUseCase.sendMessage(chatData);
         sendFileMessageCubit.isSending = false;
-        await AuthDataSource.sendPushNotification(
-          getUserDataCubit.userData.pushToken,
-          message,
-          authCubit.userData.id,
-        );
+        await sendNotificationCubit.sendNotification(title: message, body: authCubit.userData.name, userId: getUserDataCubit.userData.id);
+        // await AuthDataSource.sendPushNotification(
+        //   getUserDataCubit.userData.pushToken,
+        //   message,
+        //   authCubit.userData.id,
+        // );
       } catch (e) {
         log("Error sending messsage $e");
         sendFileMessageCubit.isSending = false;
@@ -84,6 +88,8 @@ class SendMessageCubit extends Cubit<SendMessageState> {
     final AuthCubit authCubit = Di().sl<AuthCubit>();
     var time = DateTime.now().millisecondsSinceEpoch.toString();
     final GetUserDataCubit getUserDataCubit = Di().sl<GetUserDataCubit>();
+    final SendNotificationCubit sendNotificationCubit =
+        Di().sl<SendNotificationCubit>();
     emit(SendMessageLoading());
     MessageModel chatData = MessageModel(
       chatId: conversationId(getUserDataCubit.userData.id),
@@ -102,11 +108,12 @@ class SendMessageCubit extends Cubit<SendMessageState> {
       senderImage: authCubit.userData.imageUrl,
     );
     await _sendMessageUseCase.sendFirstMessage(chatData);
-    await AuthDataSource.sendPushNotification(
-      getUserDataCubit.userData.pushToken,
-      message,
-      authCubit.userData.id,
-    );
+    await sendNotificationCubit.sendNotification(title: message, body: authCubit.userData.name, userId: getUserDataCubit.userData.id);
+    // await AuthDataSource.sendPushNotification(
+    //   getUserDataCubit.userData.pushToken,
+    //   message,
+    //   authCubit.userData.id,
+    // );
     log(message);
     emit(SendMessageSuccess());
   }

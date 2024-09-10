@@ -9,6 +9,7 @@ import 'package:bevy_messenger/pages/signup/data/models/usermodel/user_model.dar
 import 'package:bevy_messenger/pages/signup/presentation/bloc/cubit/create_profile_cubit.dart';
 import 'package:email_otp/email_otp.dart';
 import 'package:flutter/material.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
@@ -56,7 +57,7 @@ class VerifyOtpDataSourceImpl extends VerifyOtpDataSource {
               .set(data.toJson());
           log('User created successfully $data');
           authCubit.getUserDataLocal(data);
-
+          await OneSignal.login(userCredential.user!.uid);
           final SharedPreferences prefs = await SharedPreferences.getInstance();
           prefs.setString('userId', userCredential.user!.uid);
           ZegoUIKitPrebuiltCallInvitationService().init(

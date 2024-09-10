@@ -8,13 +8,12 @@ import 'package:bevy_messenger/helper/toast_messages.dart';
 import 'package:bevy_messenger/pages/signup/data/models/usermodel/user_model.dart';
 import 'package:bevy_messenger/pages/signup/presentation/bloc/cubit/create_profile_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 
 import '../../../../configs/zego_cloud_config.dart';
-// import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
-// import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
 
 abstract class LoginDataSource {
   Future<String> login(BuildContext context);
@@ -34,6 +33,13 @@ class LoginDataSourceImpl extends LoginDataSource {
                 email: createProfileCubit.emailController.text,
                 password: createProfileCubit.passwordController.text)
             .then((value) async {
+          debugPrint("value ${value.user?.uid}");
+          if (value.user == null) {
+            debugPrint("value is ${value.user?.uid}");
+            WarningHelper.showErrorToast(
+                "Error While Login Please Try Again Later", context);
+            return "error";
+          }
           return await AuthDataSource.firestore
               .collection('users')
               .doc(value.user?.uid)
@@ -41,13 +47,19 @@ class LoginDataSourceImpl extends LoginDataSource {
               .then((value) async {
             var userData =
                 UserModel.fromJson(value.data() as Map<String, dynamic>);
+            authCubit.getUserDataLocal(userData);
             final SharedPreferences prefs =
                 await SharedPreferences.getInstance();
             prefs.setString('userId', userData.id);
             String pushToken = await AuthDataSource.getFirebaseMessagingToken();
-            await AuthDataSource.updateActiveStatus(true,);
+            await AuthDataSource.updateActiveStatus(
+              true,
+            );
             userData = userData.copyWith(pushToken: pushToken);
-            await AuthDataSource.updatePushToken(pushToken,);
+            await OneSignal.login(userData.id);
+            await AuthDataSource.updatePushToken(
+              pushToken,
+            );
             authCubit.getUserDataLocal(userData);
             ZegoUIKitPrebuiltCallInvitationService().init(
               appID: ZegoCLouds.appId,
@@ -86,7 +98,6 @@ class LoginDataSourceImpl extends LoginDataSource {
                     .insert(0, ZegoCallMenuBarButtonName.minimizingButton);
                 config.topMenuBar.buttons
                     .insert(0, ZegoCallMenuBarButtonName.soundEffectButton);
-
                 return config;
               },
             );

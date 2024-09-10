@@ -75,7 +75,7 @@ class _LoginPageState extends State<SignUpPage> {
                     ),
                     Column(
                       children: [
-                        BlocBuilder (
+                        BlocBuilder(
                           bloc: _createProfileCubit,
                           builder: (context, state) {
                             return AuthTextField(
@@ -108,27 +108,39 @@ class _LoginPageState extends State<SignUpPage> {
                           height: 30,
                         ),
                         BlocBuilder(
-                          bloc: _textFieldsCubit,
+                          bloc: _createProfileCubit,
                           builder: (context, state) {
-                            return AuthTextField(
-                              controller: _createProfileCubit.emailController,
-                              feildName: 'Your Email',
-                              errorText: _textFieldsCubit.isEmailValid
-                                  ? ''
-                                  : 'Please enter a valid email',
-                              textColor: _textFieldsCubit.isEmailValid
-                                  ? AppColors.white
-                                  : AppColors.redColor,
-                              suffixPressed: () {
-                                _createProfileCubit.emailController.clear();
-                              },
-                              suffixIcon: const Icon(
-                                Icons.cancel,
-                                size: 16,
-                                color: AppColors.textColor,
-                              ),
-                              onChanged: (query) {
-                                _textFieldsCubit.validateEmailTextFields(query);
+                            return BlocBuilder(
+                              bloc: _textFieldsCubit,
+                              builder: (context, state) {
+                                return AuthTextField(
+                                  controller:
+                                      _createProfileCubit.emailController,
+                                  feildName: 'Your Email',
+                                  errorText: _textFieldsCubit.isEmailValid ||
+                                          _createProfileCubit.isTakenEmail
+                                      ? ''
+                                      : 'Please enter a valid email',
+                                  textColor: _textFieldsCubit.isEmailValid ||
+                                          _createProfileCubit.isTakenEmail
+                                      ? AppColors.white
+                                      : AppColors.redColor,
+                                  suffixPressed: () {
+                                    _createProfileCubit.emailController.clear();
+                                  },
+                                  onSubmit: (p0) {
+                                    _createProfileCubit.checkUserEmail(context);
+                                  },
+                                  suffixIcon: const Icon(
+                                    Icons.cancel,
+                                    size: 16,
+                                    color: AppColors.textColor,
+                                  ),
+                                  onChanged: (query) {
+                                    _textFieldsCubit
+                                        .validateEmailTextFields(query);
+                                  },
+                                );
                               },
                             );
                           },
@@ -232,7 +244,7 @@ class _LoginPageState extends State<SignUpPage> {
                                 ? AppColors.redColor
                                 : AppColors.textColor,
                             onPressed: () {
-                              if(_createProfileCubit.isCreatingProfile) return;
+                              if (_createProfileCubit.isCreatingProfile) return;
                               _createProfileCubit.createProfile(context);
                             },
                             buttonText: "Continue",

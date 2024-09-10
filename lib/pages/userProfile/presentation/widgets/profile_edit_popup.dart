@@ -9,6 +9,7 @@ import 'package:bevy_messenger/pages/userProfile/presentation/widgets/user_block
 import 'package:bevy_messenger/utils/enums.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 // import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
@@ -35,7 +36,8 @@ class EditProfilePopupMenue extends StatelessWidget {
       constraints:
           const BoxConstraints(maxHeight: 74, maxWidth: 155, minWidth: 155),
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-        if (_getUserDataCubit.userData == null || _getUserDataCubit.userData?.id == _authCubit.userData.id)
+        if (_getUserDataCubit.userData == null ||
+            _getUserDataCubit.userData?.id == _authCubit.userData.id)
           PopupMenuItem<String>(
             height: 34,
             value: 'edit',
@@ -63,24 +65,28 @@ class EditProfilePopupMenue extends StatelessWidget {
               ],
             ),
           ),
-        if (_getUserDataCubit.userData == null || _getUserDataCubit.userData?.id == _authCubit.userData.id)
+        if (_getUserDataCubit.userData == null ||
+            _getUserDataCubit.userData?.id == _authCubit.userData.id)
           PopupMenuItem<String>(
             height: 34,
             value: 'logout',
             onTap: () async {
-             try{
-              SharedPreferences preferences = await SharedPreferences.getInstance();
-              preferences.clear();
-               await AuthDataSource.updateActiveStatus(false);
-              await ZegoUIKitPrebuiltCallInvitationService().uninit();
-              await AuthDataSource.auth.signOut().then((value) {
-                AutoRouter.of(context).pushAndPopUntil(
-                    predicate: (route) => false, const GetStartedPageRoute());
-              });
-             }catch(e){
+              try {
+                SharedPreferences preferences =
+                    await SharedPreferences.getInstance();
+                preferences.clear();
+                await AuthDataSource.updateActiveStatus(false);
+                await ZegoUIKitPrebuiltCallInvitationService().uninit();
+                await OneSignal.logout();
+                await AuthDataSource.auth.signOut().then((value) {
+                  AutoRouter.of(context).pushAndPopUntil(
+                      predicate: (route) => false, const GetStartedPageRoute());
+                });
+              } catch (e) {
                 debugPrint(e.toString());
-                WarningHelper.showErrorToast("Error while logging out please try again.", context);
-             }
+                WarningHelper.showErrorToast(
+                    "Error while logging out please try again.", context);
+              }
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -95,7 +101,7 @@ class EditProfilePopupMenue extends StatelessWidget {
             ),
           ),
         if (_getUserDataCubit.userData != null &&
-                        _getUserDataCubit.userData?.id != _authCubit.userData.id)
+            _getUserDataCubit.userData?.id != _authCubit.userData.id)
           PopupMenuItem<String>(
             height: 34,
             value: 'createGroup',
@@ -103,9 +109,7 @@ class EditProfilePopupMenue extends StatelessWidget {
               _createGroupCubit.changeGroupCategory(GroupCategory.group);
               _createGroupCubit.addParticipiants(
                   _getUserDataCubit.userData ?? const UserModel());
-              AutoRouter.of(context).push(CreateGroupRoute(
-                isRoom: false
-              ));
+              AutoRouter.of(context).push(CreateGroupRoute(isRoom: false));
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -119,18 +123,24 @@ class EditProfilePopupMenue extends StatelessWidget {
               ],
             ),
           ),
-          if (_getUserDataCubit.userData != null &&
-                        _getUserDataCubit.userData?.id != _authCubit.userData.id && !_authCubit.userData.blockedUsers.contains(_getUserDataCubit.userData?.id))
+        if (_getUserDataCubit.userData != null &&
+            _getUserDataCubit.userData?.id != _authCubit.userData.id &&
+            !_authCubit.userData.blockedUsers
+                .contains(_getUserDataCubit.userData?.id))
           PopupMenuItem<String>(
             height: 34,
             value: 'blockUser',
             onTap: () {
-            blockUserDialouge(context);
+              blockUserDialouge(context);
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Icon(Icons.block,color: AppColors.white,size: 20,),
+                const Icon(
+                  Icons.block,
+                  color: AppColors.white,
+                  size: 20,
+                ),
                 AppTextStyle(
                     text: "Block User",
                     fontSize: 11,
@@ -139,18 +149,25 @@ class EditProfilePopupMenue extends StatelessWidget {
               ],
             ),
           ),
-          if (_getUserDataCubit.userData != null &&
-                        _getUserDataCubit.userData?.id != _authCubit.userData.id && _authCubit.userData.blockedUsers.contains(_getUserDataCubit.userData?.id))
+        if (_getUserDataCubit.userData != null &&
+            _getUserDataCubit.userData?.id != _authCubit.userData.id &&
+            _authCubit.userData.blockedUsers
+                .contains(_getUserDataCubit.userData?.id))
           PopupMenuItem<String>(
             height: 34,
             value: 'unBlock',
             onTap: () {
-              _authCubit.removeBlockedUser(_getUserDataCubit.userData?.id ?? "");
+              _authCubit
+                  .removeBlockedUser(_getUserDataCubit.userData?.id ?? "");
             },
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Icon(Icons.block,color: AppColors.white,size: 20,),
+                const Icon(
+                  Icons.block,
+                  color: AppColors.white,
+                  size: 20,
+                ),
                 AppTextStyle(
                     text: "Unblock User",
                     fontSize: 11,

@@ -38,6 +38,7 @@ class CreateProfileCubit extends Cubit<CreateProfileState> {
       TextEditingController();
 
   bool isTaken = false;
+  bool isTakenEmail = false;
 
   // check that if the user name is already taken
   checkUserName(BuildContext context) {
@@ -53,6 +54,25 @@ class CreateProfileCubit extends Cubit<CreateProfileState> {
         return;
       } else {
         isTaken = false;
+        emit(CreateProfileSuccess());
+      }
+    }
+  }
+
+  checkUserEmail(BuildContext context) {
+    final AuthCubit authCubit = Di().sl<AuthCubit>();
+    emit(CreateProfileLoading());
+    debugPrint('otherUsernames ${authCubit.otherUserEmail}');
+    for (var element in authCubit.otherUserEmail) {
+      if (element.replaceAll(" ", "") ==
+          emailController.text.replaceAll(" ", "")) {
+        isTakenEmail = true;
+        emit(CreateProfileSuccess());
+        WarningHelper.showWarningToast(
+            'Email is already exist please choose another email', context);
+        return;
+      } else {
+        isTakenEmail = false;
         emit(CreateProfileSuccess());
       }
     }
@@ -98,21 +118,25 @@ class CreateProfileCubit extends Cubit<CreateProfileState> {
     } else if (!isPasswordValid()) {
       WarningHelper.showWarningToast('Password should be same', context);
     } else {
-      if (isTaken == false) {
+      if (isTaken == true) {
+        WarningHelper.showWarningToast(
+            'Please Change Your Username. This Is Already Taken', context);
+      } else if (isTakenEmail == true) {
+        WarningHelper.showWarningToast(
+            'Please Change Your Email. This Is Already Taken', context);
+      } else {
         emit(CreateProfileLoading());
         isCreatingProfile = true;
         final result = await createProfileUsecase.createProfile(
             phoneController.text, context);
         if (result == 'success') {
-        AutoRouter.of(context).replace(OtpPageRoute());
+          AutoRouter.of(context).replace(OtpPageRoute());
           emit(CreateProfileSuccess());
         } else {
           log("result $result");
           isCreatingProfile = false;
           emit(const CreateProfileFailed(message: 'Failed to create profile'));
         }
-      }else{
-        WarningHelper.showWarningToast('Please Change Your Username. This Is Already Taken', context);
       }
     }
   }

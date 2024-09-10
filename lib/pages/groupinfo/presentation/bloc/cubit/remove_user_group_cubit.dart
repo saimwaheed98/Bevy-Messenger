@@ -21,7 +21,7 @@ class RemoveUserGroupCubit extends Cubit<RemoveUserGroupState> {
   // empty the list
   emptyList(){
     emit(RemovingUserLoading());
-    user = [];
+    user = List<String>.empty();
     emit(RemovedUserLoaded());
   }
 }

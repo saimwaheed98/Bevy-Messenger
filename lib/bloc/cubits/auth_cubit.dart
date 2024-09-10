@@ -16,10 +16,12 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthStateInitial());
 
   List<String> otherUsernames = [];
+  List<String> otherUserEmail = [];
 
   Future<void> getOtherUsernames() async {
     emit(AuthStateLoading());
     otherUsernames = await AuthDataSource.getOtherUsernames();
+    otherUserEmail = await AuthDataSource.getOtherEmails();
     emit(AuthStateLoded());
   }
 

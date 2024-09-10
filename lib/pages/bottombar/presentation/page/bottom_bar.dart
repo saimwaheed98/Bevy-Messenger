@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:bevy_messenger/bloc/cubits/auth_cubit.dart';
 import 'package:bevy_messenger/bloc/cubits/get_notification_click_cubit.dart';
 import 'package:bevy_messenger/bloc/cubits/internet_con_cubit.dart';
+import 'package:bevy_messenger/data/datasources/auth_datasource.dart';
 import 'package:bevy_messenger/pages/bottombar/presentation/bloc/cubit/bottom_bar_cubit.dart';
 import 'package:bevy_messenger/pages/bottombar/presentation/widgets/bottom_bar_widget.dart';
 import 'package:bevy_messenger/pages/gallery/presentation/bloc/cubit/gallery_cubit.dart';
@@ -33,7 +34,14 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
     _getUserCubit.fetchContactsAndUsers();
     _galleryCubit.requestPermission();
     _internetConCubit.listenToConnectivityChanges();
+    init();
     super.initState();
+  }
+
+  // init
+  Future<void> init() async {
+    String token = await AuthDataSource.getFirebaseMessagingToken();
+    await AuthDataSource.updatePushToken(token);
   }
 
   @override

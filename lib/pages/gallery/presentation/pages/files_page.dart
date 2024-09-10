@@ -26,6 +26,7 @@ class FileViewerPage extends StatefulWidget {
 class _FileViewerAppState extends State<FileViewerPage> {
   final ImagePickerCubit _imagePickerCubit = Di().sl<ImagePickerCubit>();
   final GalleryCubit _galleryCubit = Di().sl<GalleryCubit>();
+  late ScrollController _scrollController;
 
   @override
   void initState() {
@@ -41,7 +42,12 @@ class _FileViewerAppState extends State<FileViewerPage> {
         _galleryCubit.gallery.isEmpty) {
       _galleryCubit.getGallery();
     }
+    _scrollController = ScrollController();
+   
+
   }
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -72,33 +78,29 @@ class _FileViewerAppState extends State<FileViewerPage> {
                   ),
                 )
               : GridView.builder(
+                controller: _scrollController,
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                   ),
-                  itemCount: _galleryCubit.fileData.length,
+                  // reverse: true,
+                  itemCount: _galleryCubit.fileData.reversed.length,
                   itemBuilder: (context, index) {
-                    final file = File(_galleryCubit.fileData[index]);
+                    final file = File(_galleryCubit.fileData.reversed.toList()[index]);
                     return InkWell(
                       borderRadius: BorderRadius.circular(15),
                       splashColor: AppColors.primaryColor.withOpacity(0.3),
                       onTap: () {
                         _fileMessageCubit.isSending = false;
-                        if (_galleryCubit.type == GalleryType.gallery) {
-                          _imagePickerCubit.getImageFile(
-                              File(_galleryCubit.fileData[index]));
-                          AutoRouter.of(context)
-                              .replace(DataPreviewPageRoute());
-                        } else if (_galleryCubit.type == GalleryType.videos) {
-                          _imagePickerCubit.getVideoFile(
-                              File(_galleryCubit.fileData[index]));
-                          AutoRouter.of(context)
-                              .replace(DataPreviewPageRoute());
-                        } else {
-                          _imagePickerCubit
-                              .getDocsFile(File(_galleryCubit.fileData[index]));
-                          AutoRouter.of(context)
-                              .replace(const FilePreviewPageRoute());
-                        }
+                    if (_galleryCubit.type == GalleryType.gallery) {
+                      _imagePickerCubit.getImageFile(File(_galleryCubit.fileData.reversed.toList()[index]));
+                      AutoRouter.of(context).replace(DataPreviewPageRoute());
+                    } else if (_galleryCubit.type == GalleryType.videos) {
+                      _imagePickerCubit.getVideoFile(File(_galleryCubit.fileData.reversed.toList()[index]));
+                      AutoRouter.of(context).replace(DataPreviewPageRoute());
+                    } else {
+                      _imagePickerCubit.getDocsFile(File(_galleryCubit.fileData.reversed.toList()[index]));
+                      AutoRouter.of(context).replace(const FilePreviewPageRoute());
+                    }
                       },
                       child: Container(
                         margin: const EdgeInsets.all(8),
@@ -137,9 +139,7 @@ class _FileViewerAppState extends State<FileViewerPage> {
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 8),
                                         child: AppTextStyle(
-                                            text: _galleryCubit.fileData[index]
-                                                .split('/')
-                                                .last,
+                                            text: _galleryCubit.fileData.reversed.toList()[index].split('/').last,
                                             fontSize: 15,
                                             maxLines: 2,
                                             fontWeight: FontWeight.w400,

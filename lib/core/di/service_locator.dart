@@ -3,6 +3,19 @@ part of 'service_locator_imports.dart';
 class Di {
   final sl = GetIt.I;
   Future<void> setup() async {
+    // clients
+    sl.registerLazySingleton<Dio>(
+      () => Dio(baseOptions()),
+    );
+
+    // services
+    sl.registerLazySingleton<NotificationHelper>(
+      () => NotificationHelperImpl(sl()),
+    );
+    sl.registerLazySingleton<SendNotificationCubit>(
+      () => SendNotificationCubit(sl()),
+    );
+    
     // cubits
     sl.registerFactory<ValidateTextFieldsCubit>(
         () => ValidateTextFieldsCubit());
@@ -39,7 +52,8 @@ class Di {
     sl.registerLazySingleton<SendGroupFileMessageCubit>(
         () => SendGroupFileMessageCubit(sl()));
     sl.registerLazySingleton<PaymentCubit>(() => PaymentCubit(sl()));
-    sl.registerLazySingleton<RemoveUserGroupCubit>(() => RemoveUserGroupCubit());
+    sl.registerLazySingleton<RemoveUserGroupCubit>(
+        () => RemoveUserGroupCubit());
     sl.registerLazySingleton<GalleryCubit>(() => GalleryCubit());
 
     // data sources

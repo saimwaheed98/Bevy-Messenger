@@ -21,6 +21,7 @@ import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 // import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import '../../../../core/di/service_locator_imports.dart';
 import '../../../../data/datasources/auth_datasource.dart';
+import '../../../../helper/toast_messages.dart';
 import '../../../../routes/routes_imports.gr.dart';
 import '../../../bottombar/presentation/bloc/cubit/bottom_bar_cubit.dart';
 import '../widgets/profile_edit_popup.dart';
@@ -372,7 +373,7 @@ class _UserProfilePageState extends State<UserProfilePage> {
                         splashFactory: NoSplash.splashFactory,
                         highlightColor: AppColors.textSecColor,
                         onTap: () async {
-                          if(widget.isGroup){
+                          if (widget.isGroup) {
                             await AuthDataSource.addChatUsers(
                                     _otherUserDataCubit.userData ??
                                         _authCubit.userData)
@@ -381,12 +382,12 @@ class _UserProfilePageState extends State<UserProfilePage> {
                                   _otherUserDataCubit.userData ??
                                       _authCubit.userData);
                               _getUserDataCubit.setChatStatus(ChatStatus.user);
-                              AutoRouter.of(context).push(const ChatPageRoute());
+                              AutoRouter.of(context)
+                                  .push(const ChatPageRoute());
                             });
-                          }else{
+                          } else {
                             AutoRouter.of(context).pop();
                           }
-
                         },
                         child: Container(
                             height: 44,
@@ -399,22 +400,107 @@ class _UserProfilePageState extends State<UserProfilePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                SvgPicture.asset(AppImages.chatIconProfile,height: 24,width: 24,color: AppColors.white,),
+                                SvgPicture.asset(
+                                  AppImages.chatIconProfile,
+                                  height: 24,
+                                  width: 24,
+                                  color: AppColors.white,
+                                ),
                               ],
                             )),
                       ),
                     if (_otherUserDataCubit.userData != null &&
                         _otherUserDataCubit.userData?.id !=
                             _authCubit.userData.id)
-                      sendCallButton(
-                          isVideoCall: true,
-                          inviteeUsersIDTextCtrl: inviteeUsersIDTextCtrl),
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              WarningHelper.showWarningToast(
+                                  "Coming Soon", context);
+                            },
+                            child: Container(
+                              height: 44,
+                              width: 44,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppColors.fieldsColor,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    AppImages.videoCallIcon,
+                                    color: AppColors.white,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Transform.rotate(
+                            angle: 45,
+                            child: Container(
+                              height: 2,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                color: AppColors.redColor,
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    // sendCallButton(
+                    //     isVideoCall: true,
+                    //     inviteeUsersIDTextCtrl: inviteeUsersIDTextCtrl),
                     if (_otherUserDataCubit.userData != null &&
                         _otherUserDataCubit.userData?.id !=
                             _authCubit.userData.id)
-                      sendCallButton(
-                          isVideoCall: false,
-                          inviteeUsersIDTextCtrl: inviteeUsersIDTextCtrl),
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              WarningHelper.showWarningToast(
+                                  "Coming Soon", context);
+                            },
+                            child: Container(
+                              height: 44,
+                              width: 44,
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppColors.fieldsColor,
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SvgPicture.asset(
+                                    AppImages.callIcon,
+                                    color: AppColors.white,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          Transform.rotate(
+                            angle: 45,
+                            child: Container(
+                              height: 2,
+                              width: 40,
+                              decoration: BoxDecoration(
+                                color: AppColors.redColor,
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    // sendCallButton(
+                    //     isVideoCall: false,
+                    //     inviteeUsersIDTextCtrl: inviteeUsersIDTextCtrl),
                   ],
                 )
               ],

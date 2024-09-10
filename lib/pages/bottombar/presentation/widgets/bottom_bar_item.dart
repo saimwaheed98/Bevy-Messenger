@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:bevy_messenger/bloc/cubits/image_picker_cubit.dart';
 import 'package:bevy_messenger/core/di/service_locator_imports.dart';
 import 'package:bevy_messenger/pages/bottombar/presentation/bloc/cubit/bottom_bar_cubit.dart';
 import 'package:bevy_messenger/pages/creategroup/presentation/bloc/cubit/create_group_cubit.dart';
@@ -23,11 +26,16 @@ class BottomBarItem extends StatelessWidget {
       builder: (context, state) {
         return GestureDetector(
           onTap: () {
-            if (_barCubit.currentIndex != 3) {
-              _otherUserDataCubit.userData = null;
-              _createGroupCubit.emptyParticipants();
+            // if (_barCubit.currentIndex != 1) {
 
-            }
+            _otherUserDataCubit.userData = null;
+            _createGroupCubit.emptyParticipants();
+            _imagePickerCubit.clearImage();
+            _imagePickerCubit.clearVideo();
+            _imagePickerCubit.clearFile();
+
+            log("making image empty");
+            // }
             _barCubit.changeIndex(index);
           },
           child: Column(
@@ -77,3 +85,4 @@ class BottomBarItem extends StatelessWidget {
 final OtherUserDataCubit _otherUserDataCubit = Di().sl<OtherUserDataCubit>();
 final BottomBarCubit _barCubit = Di().sl<BottomBarCubit>();
 final CreateGroupCubit _createGroupCubit = Di().sl<CreateGroupCubit>();
+final ImagePickerCubit _imagePickerCubit = Di().sl<ImagePickerCubit>();

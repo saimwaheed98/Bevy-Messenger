@@ -7,6 +7,7 @@ import 'package:equatable/equatable.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../bloc/cubits/auth_cubit.dart';
+import '../../../../../bloc/cubits/send_notification_cubit.dart';
 import '../../../../../core/di/service_locator_imports.dart';
 part '../state/send_group_message_state.dart';
 
@@ -20,6 +21,8 @@ class SendGroupMessageCubit extends Cubit<SendGroupMessageState> {
       String message, String secMessage, MessageType messageType) async {
     final GetUserDataCubit getUserDataCubit = Di().sl<GetUserDataCubit>();
     final AuthCubit authCubit = Di().sl<AuthCubit>();
+        final SendNotificationCubit sendNotificationCubit =
+        Di().sl<SendNotificationCubit>();
     emit(SendingGroupMessage());
     var time = DateTime.now().millisecondsSinceEpoch.toString();
     var uuid = const Uuid().v4();
@@ -44,6 +47,12 @@ class SendGroupMessageCubit extends Cubit<SendGroupMessageState> {
         .sendMessageGroup(getUserDataCubit.groupData, messageModel)
         .then((value) async {
       if (value.contains("success")) {
+        await sendNotificationCubit.sendNotification(
+          body: message,
+          title: authCubit.userData.name,
+          userIds: getUserDataCubit.groupData.members,
+          userId: ""
+        );
         await AuthDataSource.sendGroupNotification(getUserDataCubit.groupData.members, message, getUserDataCubit.groupData.id);
         emit(GroupMessageSent());
       } else {
@@ -52,3 +61,5 @@ class SendGroupMessageCubit extends Cubit<SendGroupMessageState> {
     });
   }
 }
+
+

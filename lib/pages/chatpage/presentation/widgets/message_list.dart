@@ -3,7 +3,6 @@ import 'package:bevy_messenger/pages/chatpage/presentation/bloc/cubit/get_messag
 import 'package:bevy_messenger/pages/chatpage/presentation/widgets/messages_container/other_message_container.dart';
 import 'package:bevy_messenger/pages/chatpage/presentation/widgets/messages_container/user_message_container.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/service_locator_imports.dart';
@@ -78,8 +77,6 @@ class _MessageListState extends State<MessageList> {
                       itemCount: _getMessagesCubit.messages.length,
                       itemBuilder: (context, index) {
                         var message = _getMessagesCubit.messages[index];
-                        debugPrint(
-                            'message value and the id is : ${message.messageId}');
                         return Column(
                           children: [
                             message.senderId == _authCubit.userData.id

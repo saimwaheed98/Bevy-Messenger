@@ -35,8 +35,10 @@ class AddUserPage extends StatefulWidget {
 
 class _AddUserPageState extends State<AddUserPage> {
   final AuthCubit _authCubit = Di().sl<AuthCubit>();
+  // final 
   @override
   void initState() {
+    // Di().sl<CreateGroupCubit>().emptyParticipants();
     if (_authCubit.userData.email == "admin@ourbevy.com") {
       ToggleHelper.startFetching();
       ToggleHelper.toggleStream.listen(

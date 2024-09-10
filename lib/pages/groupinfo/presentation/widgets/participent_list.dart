@@ -42,13 +42,13 @@ class ParticipentList extends StatelessWidget {
                 var data = snapshot.data?.docs;
                 var list =
                     data?.map((e) => UserModel.fromJson(e.data())).toList();
+                _createGroupCubit.getParticpants(list ?? []);
                 return ListView.builder(
                   shrinkWrap: true,
                   itemCount: list?.length,
                   physics: const NeverScrollableScrollPhysics(),
                   itemBuilder: (context, index) {
                     var user = list?[index];
-                    _createGroupCubit.addParticipiants(user ?? const UserModel());
                     return ParticipiantContainer(
                       onLongPress: () {
                         if(groupData.category == GroupCategory.group.name){

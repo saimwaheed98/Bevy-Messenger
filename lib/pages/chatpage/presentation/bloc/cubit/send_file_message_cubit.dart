@@ -10,6 +10,7 @@ import 'package:equatable/equatable.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../../bloc/cubits/auth_cubit.dart';
+import '../../../../../bloc/cubits/send_notification_cubit.dart';
 import '../../../../../core/di/service_locator_imports.dart';
 import '../../../../../helper/conversation_id_getter.dart';
 import 'get_user_data_cubit.dart';
@@ -36,6 +37,8 @@ class SendFileMessageCubit extends Cubit<SendFileMessageState> {
     final GetUserDataCubit getUserDataCubit = Di().sl<GetUserDataCubit>();
     final SendGroupFileMessageCubit sendGroupFileMessageCubit =
         Di().sl<SendGroupFileMessageCubit>();
+    final SendNotificationCubit sendNotificationCubit =
+        Di().sl<SendNotificationCubit>();
     emit(SendFileMessageLoading());
     try {
       sendingFailed = false;
@@ -67,12 +70,16 @@ class SendFileMessageCubit extends Cubit<SendFileMessageState> {
           senderImage: authCubit.userData.imageUrl,
         );
         await _fileMessageUseCase.sendFileMessage(file, messageData);
+        await sendNotificationCubit.sendNotification(
+            body: "Sented a file",
+            title: authCubit.userData.name,
+            userId: getUserDataCubit.userData.id);
         isSending = false;
         log("Sendnig message in users");
         emit(SendFileMessageSuccess());
       }
     } catch (e) {
-       isSending = false;
+      isSending = false;
       sendingFailed = true;
       log("Error in sending file message $e");
       emit(SendFileMessageFailure());

@@ -7,7 +7,6 @@ import 'package:bevy_messenger/pages/signup/presentation/bloc/cubit/create_profi
 import 'package:bevy_messenger/routes/routes_imports.gr.dart';
 import 'package:email_otp/email_otp.dart';
 import 'package:flutter/material.dart';
-
 import '../../../../core/di/service_locator_imports.dart';
 
 abstract class CreateProfileDataSource {

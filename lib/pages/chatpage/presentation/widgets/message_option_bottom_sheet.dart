@@ -85,18 +85,18 @@ class _MessageOptionBottomSheetState extends State<MessageOptionBottomSheet> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               singleMessageOptionWidget(() {
-                // Navigator.of(context).pop();
                 _pickImage();
               }, AppImages.cameraIcon, "Camera"),
               singleMessageOptionWidget(() {
-                // Navigator.of(context).pop();
                 if (Platform.isAndroid) {
+                   Navigator.of(context).pop();
                   _galleryCubit.changeType(GalleryType.gallery);
                   AutoRouter.of(context).push(const FileViewerPageRoute());
                 } else {
                   _imagePickerCubit
                       .pickImage(ImageSource.gallery)
                       .then((value) {
+                    Navigator.of(context).pop();
                     if (value.path.isNotEmpty) {
                       AutoRouter.of(context).push(DataPreviewPageRoute());
                     }
@@ -104,24 +104,26 @@ class _MessageOptionBottomSheetState extends State<MessageOptionBottomSheet> {
                 }
               }, AppImages.imageIcon, "Gallery"),
               singleMessageOptionWidget(() {
-                // Navigator.of(context).pop();
                 if (Platform.isAndroid) {
                   _galleryCubit.changeType(GalleryType.files);
+                  Navigator.of(context).pop();
                   AutoRouter.of(context).push(const FileViewerPageRoute());
                 } else {
                   _imagePickerCubit.pickFile().then((value) async {
+                    Navigator.of(context).pop();
                     if (value.path.isEmpty) return;
                     AutoRouter.of(context).push(const FilePreviewPageRoute());
                   });
                 }
               }, AppImages.documentIcon, "Documents"),
               singleMessageOptionWidget(() {
-                // Navigator.of(context).pop();
                 if (Platform.isAndroid) {
                   _galleryCubit.changeType(GalleryType.videos);
+                  Navigator.of(context).pop();
                   AutoRouter.of(context).push(const FileViewerPageRoute());
                 } else {
                   _imagePickerCubit.pickVideo().then((value) {
+                    Navigator.of(context).pop();
                     if (value.path.isNotEmpty) {
                       AutoRouter.of(context).push(DataPreviewPageRoute());
                     }
@@ -137,9 +139,7 @@ class _MessageOptionBottomSheetState extends State<MessageOptionBottomSheet> {
         Align(
           alignment: Alignment.bottomLeft,
           child: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
+            onTap: () {},
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
               padding: const EdgeInsets.only(top: 8),

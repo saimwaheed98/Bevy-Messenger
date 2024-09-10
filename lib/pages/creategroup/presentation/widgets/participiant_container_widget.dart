@@ -134,7 +134,7 @@ class ParticipiantContainer extends StatelessWidget {
                           _getUserDataCubit.removeFromMemberList(user.id);
                           await AuthDataSource.removeParticipiants(groupData.id, [user.id]);
                         },
-                        icon: SvgPicture.asset(AppImages.leaveGroup)
+                        icon: const Icon(Icons.cancel_outlined,size: 20,color: AppColors.redColor,)
                     ),
                   if (user.id == groupData.adminId)
                     Container(

@@ -189,29 +189,29 @@ class GroupInfoPage extends StatelessWidget {
                       const SizedBox(
                         width: 8,
                       ),
-                      if (_getUserDataCubit.groupData.adminId ==
-                          _authCubit.userData.id &&
-                          groupData.category == GroupCategory.group.name)
-                      InkWell(
-                        splashColor: AppColors.transparent,
-                        onTap: () {
-                          AutoRouter.of(context).push(AddUserPageRoute(
-                              onTap: () {
-                                log("adding users");
-                              },
-                              isAddingInfo: false,
-                              isAdding: true));
-                        },
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                              color: AppColors.redColor.withOpacity(0.8),
-                              borderRadius: BorderRadius.circular(10)),
-                          child:
-                          const Icon(Icons.remove, color: AppColors.white),
-                        ),
-                      ),
+                      // if (_getUserDataCubit.groupData.adminId ==
+                      //     _authCubit.userData.id &&
+                      //     groupData.category == GroupCategory.group.name)
+                      // InkWell(
+                      //   splashColor: AppColors.transparent,
+                      //   onTap: () {
+                      //     AutoRouter.of(context).push(AddUserPageRoute(
+                      //         onTap: () {
+                      //           log("adding users");
+                      //         },
+                      //         isAddingInfo: false,
+                      //         isAdding: true));
+                      //   },
+                      //   child: Container(
+                      //     height: 40,
+                      //     width: 40,
+                      //     decoration: BoxDecoration(
+                      //         color: AppColors.redColor.withOpacity(0.8),
+                      //         borderRadius: BorderRadius.circular(10)),
+                      //     child:
+                      //     const Icon(Icons.remove, color: AppColors.white),
+                      //   ),
+                      // ),
                     ],
                   ),
                   const SizedBox(

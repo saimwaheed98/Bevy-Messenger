@@ -3,14 +3,16 @@ import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_notification_channel/flutter_notification_channel.dart';
-import 'package:flutter_notification_channel/notification_importance.dart';
-import 'package:flutter_notification_channel/notification_visibility.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'; 
 import 'package:flutter_downloader/flutter_downloader.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
+import '../../bloc/cubits/send_notification_cubit.dart';
 import '../../firebase_options.dart';
 import '../di/service_locator_imports.dart';
 import '/.env';
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 class AppInitializer {
   static Future<void> initialize() async {
@@ -20,24 +22,34 @@ class AppInitializer {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    const DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings();
+
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsIOS,
+    );
+
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+    );
+
     await FlutterDownloader.initialize();
-    _createNotificationChannel();
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     await Di().setup();
+    _createNotificationChannel();
+
   }
 
   static _createNotificationChannel() async {
-    await FlutterNotificationChannel.registerNotificationChannel(
-      description: 'This channel is used for important notifications',
-      id: 'chats',
-      importance: NotificationImportance.IMPORTANCE_HIGH,
-      name: 'Chats',
-      visibility: NotificationVisibility.VISIBILITY_PUBLIC,
-      allowBubbles: true,
-      enableVibration: true,
-      enableSound: true,
-      showBadge: true,
-    );
+    final SendNotificationCubit sendNotificationCubit =
+        Di().sl<SendNotificationCubit>();
+    await sendNotificationCubit.initOneSignal();
+    await sendNotificationCubit.createNotificationChannels();
   }
 
   @pragma('vm:entry-point')

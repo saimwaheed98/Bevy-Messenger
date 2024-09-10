@@ -414,4 +414,14 @@ class AuthDataSource {
     });
     return otherUsernames;
   }
+  static Future<List<String>> getOtherEmails()async{
+    List<String> otherUsernames = [];
+    await firestore.collection('users').get().then((value) {
+      for (var element in value.docs) {
+        String username = element.data()['email'];
+        otherUsernames.add(username.toLowerCase());
+      }
+    });
+    return otherUsernames;
+  }
 }

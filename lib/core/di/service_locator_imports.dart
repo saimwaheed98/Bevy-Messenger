@@ -59,13 +59,17 @@ import 'package:bevy_messenger/pages/signup/data/repositories/create_profile_rep
 import 'package:bevy_messenger/pages/signup/domain/usecases/create_profile_usecase.dart';
 import 'package:bevy_messenger/pages/signup/presentation/bloc/cubit/create_profile_cubit.dart';
 import 'package:bevy_messenger/pages/userProfile/presentation/bloc/cubit/other_user_data_cubit.dart';
+import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../bloc/cubits/auth_cubit.dart';
 import '../../bloc/cubits/internet_con_cubit.dart';
+import '../../bloc/cubits/send_notification_cubit.dart';
+import '../../configs/options.dart';
 import '../../data/datasources/check_notification_click_datasource.dart';
 import '../../data/datasources/check_update_datasource.dart';
 import '../../data/datasources/internet_connection_datasource.dart';
+import '../../helper/notification_helper.dart';
 import '../../pages/chatpage/data/repositories/get_messages_repository_impl.dart';
 import '../../pages/chatpage/domain/usecases/send_group_file_message_usecase.dart';
 import '../../pages/chatpage/presentation/bloc/cubit/send_message_cubit.dart';
