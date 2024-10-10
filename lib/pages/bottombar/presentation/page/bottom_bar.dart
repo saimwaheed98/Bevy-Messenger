@@ -1,15 +1,15 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:bevy_messenger/bloc/cubits/auth_cubit.dart';
-import 'package:bevy_messenger/bloc/cubits/get_notification_click_cubit.dart';
-import 'package:bevy_messenger/bloc/cubits/internet_con_cubit.dart';
-import 'package:bevy_messenger/data/datasources/auth_datasource.dart';
+import 'package:bevy_messenger/bloc/cubits/internet_con_cubit.dart'; 
 import 'package:bevy_messenger/pages/bottombar/presentation/bloc/cubit/bottom_bar_cubit.dart';
 import 'package:bevy_messenger/pages/bottombar/presentation/widgets/bottom_bar_widget.dart';
 import 'package:bevy_messenger/pages/gallery/presentation/bloc/cubit/gallery_cubit.dart';
 import 'package:bevy_messenger/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
+import '../../../../bloc/cubits/send_notification_cubit.dart';
 import '../../../../core/di/service_locator_imports.dart';
 import '../../../addusers/presentation/bloc/cubit/get_user_cubit.dart';
 
@@ -21,16 +21,24 @@ class HomeBottomBar extends StatefulWidget {
   State<HomeBottomBar> createState() => _HomeBottomBarState();
 }
 
-class _HomeBottomBarState extends State<HomeBottomBar> {
-  final GetNotificationClickCubit _getNotificationClickCubit =
-      Di().sl<GetNotificationClickCubit>();
+class _HomeBottomBarState extends State<HomeBottomBar> { 
   final InternetConCubit _internetConCubit = Di().sl<InternetConCubit>();
   final GalleryCubit _galleryCubit = Di().sl<GalleryCubit>();
 
+  final SendNotificationCubit _sendNotificationCubit =
+      Di().sl<SendNotificationCubit>();
   @override
   void initState() {
-    _getNotificationClickCubit.getNotificationClick(context);
-    _getNotificationClickCubit.handleInteractedMessage(context);
+    // _getNotificationClickCubit.getNotificationClick(context);
+    // _getNotificationClickCubit.handleInteractedMessage(context);
+    OneSignal.Notifications.addClickListener(
+      (event) async {
+        debugPrint('event');
+        debugPrint('event: ${event.notification.additionalData}');
+       await  _sendNotificationCubit.handleMessage(
+            event.notification.additionalData ?? {}, context);
+      },
+    );
     _getUserCubit.fetchContactsAndUsers();
     _galleryCubit.requestPermission();
     _internetConCubit.listenToConnectivityChanges();
@@ -40,8 +48,8 @@ class _HomeBottomBarState extends State<HomeBottomBar> {
 
   // init
   Future<void> init() async {
-    String token = await AuthDataSource.getFirebaseMessagingToken();
-    await AuthDataSource.updatePushToken(token);
+    // String token = await AuthDataSource.getFirebaseMessagingToken();
+    // await AuthDataSource.updatePushToken(token);
   }
 
   @override

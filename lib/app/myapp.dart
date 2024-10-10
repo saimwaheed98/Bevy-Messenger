@@ -27,9 +27,7 @@ class _MyAppState extends State<MyApp> {
           userID: value.id,
           userName: value.name,
           plugins: [
-            ZegoUIKitSignalingPlugin(
-
-            ),
+            ZegoUIKitSignalingPlugin(),
           ],
           notificationConfig: ZegoCallInvitationNotificationConfig(
             androidNotificationConfig: ZegoCallAndroidNotificationConfig(

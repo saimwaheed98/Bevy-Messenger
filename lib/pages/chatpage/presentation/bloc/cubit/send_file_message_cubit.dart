@@ -73,6 +73,10 @@ class SendFileMessageCubit extends Cubit<SendFileMessageState> {
         await sendNotificationCubit.sendNotification(
             body: "Sented a file",
             title: authCubit.userData.name,
+            data: {
+              "screen": "chat",
+              "room_id": authCubit.userData.id,
+            },
             userId: getUserDataCubit.userData.id);
         isSending = false;
         log("Sendnig message in users");

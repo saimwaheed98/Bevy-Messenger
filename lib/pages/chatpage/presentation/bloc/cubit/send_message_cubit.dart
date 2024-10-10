@@ -1,8 +1,7 @@
 import 'dart:developer';
 
 import 'package:bevy_messenger/bloc/cubits/auth_cubit.dart';
-import 'package:bevy_messenger/core/di/service_locator_imports.dart';
-import 'package:bevy_messenger/data/datasources/auth_datasource.dart';
+import 'package:bevy_messenger/core/di/service_locator_imports.dart'; 
 import 'package:bevy_messenger/helper/conversation_id_getter.dart';
 import 'package:bevy_messenger/pages/chatpage/data/model/message_model.dart';
 import 'package:bevy_messenger/pages/chatpage/domain/usecases/send_message_usecase.dart';
@@ -27,7 +26,7 @@ class SendMessageCubit extends Cubit<SendMessageState> {
     final AuthCubit authCubit = Di().sl<AuthCubit>();
     var time = DateTime.now().millisecondsSinceEpoch.toString();
     final GetUserDataCubit getUserDataCubit = Di().sl<GetUserDataCubit>();
-        final SendNotificationCubit sendNotificationCubit =
+    final SendNotificationCubit sendNotificationCubit =
         Di().sl<SendNotificationCubit>();
     final SendGroupMessageCubit sendGroupMessageCubit =
         Di().sl<SendGroupMessageCubit>();
@@ -66,7 +65,14 @@ class SendMessageCubit extends Cubit<SendMessageState> {
         );
         await _sendMessageUseCase.sendMessage(chatData);
         sendFileMessageCubit.isSending = false;
-        await sendNotificationCubit.sendNotification(title: message, body: authCubit.userData.name, userId: getUserDataCubit.userData.id);
+        await sendNotificationCubit.sendNotification(
+            title: message,
+            body: authCubit.userData.name,
+            data: {
+              "screen": "chat",
+              "room_id": authCubit.userData.id,
+            },
+            userId: getUserDataCubit.userData.id);
         // await AuthDataSource.sendPushNotification(
         //   getUserDataCubit.userData.pushToken,
         //   message,
@@ -108,7 +114,14 @@ class SendMessageCubit extends Cubit<SendMessageState> {
       senderImage: authCubit.userData.imageUrl,
     );
     await _sendMessageUseCase.sendFirstMessage(chatData);
-    await sendNotificationCubit.sendNotification(title: message, body: authCubit.userData.name, userId: getUserDataCubit.userData.id);
+    await sendNotificationCubit.sendNotification(
+        title: message,
+        body: authCubit.userData.name,
+        data: {
+          "screen": "chat",
+          "room_id": authCubit.userData.id,
+        },
+        userId: getUserDataCubit.userData.id);
     // await AuthDataSource.sendPushNotification(
     //   getUserDataCubit.userData.pushToken,
     //   message,

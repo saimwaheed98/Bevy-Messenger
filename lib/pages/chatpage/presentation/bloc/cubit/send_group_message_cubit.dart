@@ -21,7 +21,7 @@ class SendGroupMessageCubit extends Cubit<SendGroupMessageState> {
       String message, String secMessage, MessageType messageType) async {
     final GetUserDataCubit getUserDataCubit = Di().sl<GetUserDataCubit>();
     final AuthCubit authCubit = Di().sl<AuthCubit>();
-        final SendNotificationCubit sendNotificationCubit =
+    final SendNotificationCubit sendNotificationCubit =
         Di().sl<SendNotificationCubit>();
     emit(SendingGroupMessage());
     var time = DateTime.now().millisecondsSinceEpoch.toString();
@@ -47,13 +47,20 @@ class SendGroupMessageCubit extends Cubit<SendGroupMessageState> {
         .sendMessageGroup(getUserDataCubit.groupData, messageModel)
         .then((value) async {
       if (value.contains("success")) {
+        List<String> members = getUserDataCubit.groupData.members.where((element) => element != authCubit.userData.id).toList();
         await sendNotificationCubit.sendNotification(
-          body: message,
-          title: authCubit.userData.name,
-          userIds: getUserDataCubit.groupData.members,
-          userId: ""
-        );
-        await AuthDataSource.sendGroupNotification(getUserDataCubit.groupData.members, message, getUserDataCubit.groupData.id);
+            body: message,
+            title: authCubit.userData.name,
+            data: {
+              "screen": "group_chat",
+              "room_id": getUserDataCubit.groupData.id,
+            },
+            userIds: members,
+            userId: "");
+        await AuthDataSource.sendGroupNotification(
+            getUserDataCubit.groupData.members,
+            message,
+            getUserDataCubit.groupData.id);
         emit(GroupMessageSent());
       } else {
         emit(GroupMessageNotSent());
@@ -61,5 +68,3 @@ class SendGroupMessageCubit extends Cubit<SendGroupMessageState> {
     });
   }
 }
-
-

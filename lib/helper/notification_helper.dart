@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import '../encrypt/.env';
@@ -32,9 +34,12 @@ class NotificationHelperImpl extends NotificationHelper {
       "include_aliases": {"external_id": pushId}, 
       "android_accent_color": "FFFF0000",
       "priority": 10,
-      "data": notificationData,
+      "data": {
+        "room_id" : notificationData!['room_id'],
+        "screen" : notificationData['screen'],
+      },
     };
-
+    log(data.toString());
     final response = await _dio.post(
       AppLinks.notificationUrl,
       data: data,

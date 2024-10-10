@@ -21,9 +21,9 @@ class SendGroupFileMessageCubit extends Cubit<SendGroupFileMessageState> {
   // send the file message
   Future<void> sendFileMessage(
       File file, String message, String secMessage, MessageType type) async {
-        // final SendFileMessageCubit sendFileMessageCubit = Di().sl<SendFileMessageCubit>();
+    // final SendFileMessageCubit sendFileMessageCubit = Di().sl<SendFileMessageCubit>();
     var uid = const Uuid().v4();
-            final SendNotificationCubit sendNotificationCubit =
+    final SendNotificationCubit sendNotificationCubit =
         Di().sl<SendNotificationCubit>();
     // sendFileMessageCubit.sendingMessageId = uid;
     final AuthCubit authCubit = Di().sl<AuthCubit>();
@@ -49,12 +49,16 @@ class SendGroupFileMessageCubit extends Cubit<SendGroupFileMessageState> {
       senderImage: authCubit.userData.imageUrl,
     );
     await _sendFileMessageUseCase.sendGroupFileMessage(file, messageData);
+     List<String> members = getUserDataCubit.groupData.members.where((element) => element != authCubit.userData.id).toList();
     await sendNotificationCubit.sendNotification(
-      body: "Sented a file",
-      title: authCubit.userData.name,
-      userIds: getUserDataCubit.groupData.members,
-      userId: ""
-    );
+        body: "Sented a file",
+        title: authCubit.userData.name,
+        data: {
+          "screen": "group_chat",
+          "room_id": getUserDataCubit.groupData.id,
+        },
+        userIds: members,
+        userId: "");
     isSending = false;
     log(message);
     emit(SendGroupFileMessageSuccess());
